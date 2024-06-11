@@ -1,9 +1,11 @@
 package com.example.simplepos.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -11,8 +13,12 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ProductCategory {
 
-    private int productCategoryID;
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productCategoryID;
     private String categoryName;
+
+    @OneToMany(mappedBy = "productCategory")
+    private List<Product> products;
 
 }

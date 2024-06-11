@@ -1,6 +1,6 @@
 package com.example.simplepos.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,16 +9,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@IdClass(InventoryPKId.class)
 public class Inventory {
 
-    private int inventroyID;
+    @EmbeddedId
+    private InventoryPKId id;
 
-    private String UPC;
+    private int quantity;
 
-    private String SKU;
+    @ManyToOne
+    @MapsId("SKU")
+    @JoinColumn(name = "SKU")
+    private Product product;
 
-    private int warehouseID;
-
-    private long quantity;
+    @ManyToOne
+    @MapsId("warehouseID")
+    @JoinColumn(name = "warehouseID")
+    private Warehouse warehouse;
 
 }

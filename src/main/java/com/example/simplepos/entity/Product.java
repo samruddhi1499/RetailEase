@@ -1,12 +1,12 @@
 package com.example.simplepos.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -14,25 +14,23 @@ import java.util.Date;
 @Entity
 public class Product {
 
-    private int productID;
-    private String productName;
-    private double productCostPrice;
-
-    private double productSellingPrice;
+    @Id
     private String SKU;
+    private String productName;
+    private Double productCostPrice;
+    private Double productSellingPrice;
+    private String productDescription;
+    private String storageType;
+    private Boolean isExpirable;
+    private Date expiryDate;
+    private Long discountID;
 
-    private  String productDescription;
+    @ManyToOne
+    @JoinColumn(name = "productCategoryID")
+    private ProductCategory productCategory;
 
-    private String productCategoryID;
+    @OneToMany(mappedBy = "product")
+    private List<Inventory> inventory;
 
-//    private storeageType
-
-    private boolean isExpirable;
-
-    private Date expiraryDate;
-
-    private int inventroyID;
-
-    private int discountID;
 
 }
