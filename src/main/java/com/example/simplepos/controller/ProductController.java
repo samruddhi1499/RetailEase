@@ -6,7 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,9 +22,11 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO){
+    public ResponseEntity<?> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("image") MultipartFile image) throws IOException, ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(productDTO.getExpiryDate());
+        productService.addProduct(productDTO,expiryDate,image);
 
-        productService.addProduct(productDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -32,9 +39,11 @@ public class ProductController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO){
+    public ResponseEntity<?> updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("image") MultipartFile image) throws IOException, ParseException{
 
-        productService.updateProduct(productDTO);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(productDTO.getExpiryDate());
+        productService.updateProduct(productDTO,expiryDate,image);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

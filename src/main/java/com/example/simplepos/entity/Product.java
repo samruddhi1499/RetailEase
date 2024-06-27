@@ -36,10 +36,9 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<Inventory> inventory;
 
-    public void addInventory(Inventory inventory) {
-        this.inventory.add(inventory);
-        inventory.setProduct(this);
-    }
+    @Lob
+    @Column(name = "productImage", columnDefinition = "BLOB")
+    private byte[] productImage;  // Image data
 
 
 }
