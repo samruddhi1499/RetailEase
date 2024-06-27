@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@IdClass(InventoryPKId.class)
+@Table(name = "Inventory")
+@ToString(exclude = {"product"})
 public class Inventory {
 
     @EmbeddedId
@@ -17,14 +19,13 @@ public class Inventory {
 
     private int quantity;
 
-    @ManyToOne
-    @MapsId("SKU")
-    @JoinColumn(name = "SKU")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SKU", referencedColumnName = "SKU", insertable = false, updatable = false)
     private Product product;
 
     @ManyToOne
-    @MapsId("warehouseID")
-    @JoinColumn(name = "warehouseID")
+    @JoinColumn(name = "warehouseID", referencedColumnName = "warehouseID", insertable = false, updatable = false)
     private Warehouse warehouse;
+
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -12,10 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "Product")
+@ToString(exclude = {"inventory"})
 public class Product {
 
     @Id
-    private String SKU;
+    @Column(name = "SKU")
+    private Long SKU;
     private String productName;
     private Double productCostPrice;
     private Double productSellingPrice;
@@ -23,7 +27,7 @@ public class Product {
     private String storageType;
     private Boolean isExpirable;
     private Date expiryDate;
-    private Long discountID;
+    private Integer discountID;
 
     @ManyToOne
     @JoinColumn(name = "productCategoryID")
@@ -31,6 +35,11 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<Inventory> inventory;
+
+    public void addInventory(Inventory inventory) {
+        this.inventory.add(inventory);
+        inventory.setProduct(this);
+    }
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.simplepos.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,14 +12,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "Product_Category")
 public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productCategoryID;
+    @Column(name = "productCategoryID")
+    private Integer productCategoryID;
     private String categoryName;
 
     @OneToMany(mappedBy = "productCategory")
+    @JsonIgnore
     private List<Product> products;
 
 }

@@ -11,14 +11,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "Warehouse")
 public class Warehouse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long warehouseID;
+    @Column(name = "warehouseID")
+    private Integer warehouseID;
     private String warehouseName;
 
     @OneToMany(mappedBy = "warehouse")
     private List<Inventory> inventory;
 
+    public Warehouse(Integer warehouseId) {
+    }
 }

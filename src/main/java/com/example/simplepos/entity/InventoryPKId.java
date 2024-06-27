@@ -1,5 +1,6 @@
 package com.example.simplepos.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -16,8 +17,10 @@ import java.io.Serializable;
 @Embeddable
 public class InventoryPKId implements Serializable {
 
-    private String SKU;
+    @Column(name = "SKU")
+    private Long productSKU;
 
-    private int warehouseID;
+    @Column(name = "warehouseID")
+    private Integer warehouseID;
 
 }
