@@ -23,6 +23,8 @@ public class ProductDTO {
     private String expiryDate; // Change to String
     private Integer discountID;
     private String productCategoryID;
+    private Integer productQuantity;
+    private String warehouseName;
     private String productImage;
 
 }

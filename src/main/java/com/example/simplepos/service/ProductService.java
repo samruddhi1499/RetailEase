@@ -1,10 +1,13 @@
 package com.example.simplepos.service;
 
+import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.ProductCategory;
+import com.example.simplepos.entity.Warehouse;
 import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.ProductRepository;
+import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +28,9 @@ public class ProductService {
     private ProductCategoryService productCategoryService;
 
     @Autowired
+    private WarehouseRepository warehouseRepository;
+
+    @Autowired
     private InventoryService inventoryService;
 
     public ProductService(ProductRepository productRepository) {
@@ -38,6 +44,8 @@ public class ProductService {
     public void addProduct(ProductDTO productDTO, Date expiryDate, MultipartFile image) throws IOException {
 
         Product product = new Product();
+        Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
+
         ProductCategory productCategory = productCategoryService.getProductCategoryById(Integer.valueOf(productDTO.getProductCategoryID()));
 
         product.setSKU(productDTO.getProductSKU());
@@ -54,8 +62,13 @@ public class ProductService {
         } else {
             product.setProductImage(image.getBytes());
         }
-
         productRepository.save(product);
+
+        inventoryService.addToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
+
+
+
+
     }
 
 

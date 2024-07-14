@@ -1,27 +1,50 @@
 package com.example.simplepos.controller;
 
 import com.example.simplepos.dto.InventoryDTO;
+import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.entity.Inventory;
 import com.example.simplepos.service.InventoryService;
+import com.example.simplepos.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api-inventory")
 public class InventoryController {
 
-    @Autowired
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
+
+    private final ProductService productService;
+
+    public InventoryController(InventoryService inventoryService, ProductService productService) {
+        this.inventoryService = inventoryService;
+        this.productService = productService;
+    }
 
     @PostMapping
     public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) {
         inventoryService.addToInventory(inventoryDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
 
+    }
+
+    @PostMapping("add-product")
+    public ResponseEntity<?> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("image") MultipartFile image) throws IOException, ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(productDTO.getExpiryDate());
+        productService.addProduct(productDTO,expiryDate,image);
+
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
