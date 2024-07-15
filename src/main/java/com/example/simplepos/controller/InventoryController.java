@@ -38,21 +38,24 @@ public class InventoryController {
     }
 
     @PostMapping("add-product")
-    public ResponseEntity<?> addProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("image") MultipartFile image) throws IOException, ParseException {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date expiryDate = sdf.parse(productDTO.getExpiryDate());
-        productService.addProduct(productDTO,expiryDate,image);
+        productService.addProduct(productDTO, expiryDate);
 
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("update-product")
-    public ResponseEntity<?> updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("image") MultipartFile image) throws IOException, ParseException{
+    public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException{
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date expiryDate = sdf.parse(productDTO.getExpiryDate());
-        boolean b = productService.updateProduct(productDTO, expiryDate, image);
+        Date expiryDate = null;
+        if(productDTO.getExpiryDate() != null){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            expiryDate = sdf.parse(productDTO.getExpiryDate());
+        }
+        boolean b = productService.updateProduct(productDTO, expiryDate);
         if(b)
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);

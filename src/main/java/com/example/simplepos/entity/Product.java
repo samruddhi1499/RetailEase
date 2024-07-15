@@ -35,8 +35,8 @@ public class Product {
     private List<Inventory> inventory;
 
     @Lob
-    @Column(name = "productImage", columnDefinition = "BLOB")
-    private byte[] productImage;  // Image data
+    @Column(name = "productImage", columnDefinition = "LONGTEXT")
+    private String productImage;  // Image data
 
 
 }

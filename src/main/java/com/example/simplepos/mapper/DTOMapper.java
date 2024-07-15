@@ -37,8 +37,9 @@ public class DTOMapper {
         dto.setIsExpirable(product.getIsExpirable());
         dto.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").format(product.getExpiryDate()));
         dto.setDiscountID(product.getDiscountID());
-        String encodedImage = (product.getProductImage() != null) ? encodeImageToBase64(product.getProductImage()) : null;
-        dto.setProductImage(encodedImage);
+       // String encodedImage = (product.getProductImage() != null) ? encodeImageToBase64(product.getProductImage()) : null;
+        dto.setProductImage(product.getProductImage());
+
 
         if (product.getProductCategory() != null) {
             dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));

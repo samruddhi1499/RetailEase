@@ -8,9 +8,10 @@ import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.ProductRepository;
 import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,12 +41,14 @@ public class ProductService {
         return productRepository.findById(SKU).orElse(null);
     }
 
-    public void addProduct(ProductDTO productDTO, Date expiryDate, MultipartFile image) throws IOException {
+    public void addProduct(ProductDTO productDTO, Date expiryDate) {
 
         Product product = new Product();
         Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
 
         ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
+
+
 
         product.setSKU(productDTO.getProductSKU());
         product.setProductName(productDTO.getProductName());
@@ -56,10 +59,10 @@ public class ProductService {
         product.setIsExpirable(productDTO.getIsExpirable());
         product.setExpiryDate(expiryDate);
         product.setStorageType(productDTO.getStorageType());
-        if (image.isEmpty()) {
+        if (productDTO.getProductImage().isEmpty()) {
             product.setProductImage(null);
         } else {
-            product.setProductImage(image.getBytes());
+            product.setProductImage(productDTO.getProductImage());
         }
         productRepository.save(product);
 
@@ -78,7 +81,7 @@ public class ProductService {
 //
 //    }
 
-    public boolean updateProduct(ProductDTO productDTO, Date expirayDate, MultipartFile image) throws IOException {
+    public boolean updateProduct(ProductDTO productDTO, Date expirayDate) throws IOException {
 
         Product product = productRepository.findById(productDTO.getProductSKU()).orElse(null);
         Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
@@ -94,7 +97,7 @@ public class ProductService {
             product.setIsExpirable(productDTO.getIsExpirable() instanceof Boolean  ? productDTO.getIsExpirable() : product.getIsExpirable());
             product.setExpiryDate(expirayDate instanceof Date ? expirayDate : product.getExpiryDate());
             product.setStorageType(productDTO.getStorageType() != null && !productDTO.getStorageType().isEmpty() ? productDTO.getStorageType() : product.getStorageType());
-            product.setProductImage(image != null ? image.getBytes(): product.getProductImage());
+            product.setProductImage(productDTO.getProductImage() != null ? productDTO.getProductImage(): product.getProductImage());
             productRepository.save(product);
 
             inventoryService.updateToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
