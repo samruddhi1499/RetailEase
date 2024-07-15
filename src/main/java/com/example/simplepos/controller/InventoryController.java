@@ -39,8 +39,11 @@ public class InventoryController {
 
     @PostMapping("add-product")
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date expiryDate = sdf.parse(productDTO.getExpiryDate());
+        Date expiryDate = null;
+        if(productDTO.getIsExpirable()){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+             expiryDate= sdf.parse(productDTO.getExpiryDate());
+        }
         productService.addProduct(productDTO, expiryDate);
 
 
