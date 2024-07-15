@@ -41,7 +41,7 @@ public class DTOMapper {
         dto.setProductImage(encodedImage);
 
         if (product.getProductCategory() != null) {
-            dto.setProductCategoryID(String.valueOf(product.getProductCategory().getProductCategoryID()));
+            dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
         }
         return dto;
     }
@@ -99,10 +99,10 @@ public class DTOMapper {
 //    }
 
     // Stub for fetching a ProductCategory by ID - implement as needed
-    private static ProductCategory fetchProductCategoryById(Integer id) {
-
-        return productCategoryService.getProductCategoryById(id);
-    }
+//    private static ProductCategory fetchProductCategoryById(Integer id) {
+//
+//        return productCategoryService.getProductCategoryById(id);
+//    }
 }
 
 

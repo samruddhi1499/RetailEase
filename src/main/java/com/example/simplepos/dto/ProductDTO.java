@@ -22,7 +22,7 @@ public class ProductDTO {
     private Boolean isExpirable;
     private String expiryDate; // Change to String
     private Integer discountID;
-    private String productCategoryID;
+    private String productCategoryName;
     private Integer productQuantity;
     private String warehouseName;
     private String productImage;

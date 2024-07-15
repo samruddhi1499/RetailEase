@@ -12,7 +12,7 @@ public class ProductCategoryService {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
-    public ProductCategory getProductCategoryById(Integer id){
-        return productCategoryRepository.findById(id).orElse(null);
+    public ProductCategory getProductCategoryByName(String productCategoryName){
+        return productCategoryRepository.findByCategoryName(productCategoryName);
     }
 }

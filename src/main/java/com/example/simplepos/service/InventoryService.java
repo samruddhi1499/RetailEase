@@ -7,33 +7,30 @@ import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.Warehouse;
 import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.InventoryRepository;
-import com.example.simplepos.repository.ProductRepository;
-import com.example.simplepos.repository.WarehouseRepository;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class InventoryService {
 
-    @Autowired
-    private InventoryRepository inventoryRepository;
+
+    private final InventoryRepository inventoryRepository;
 
     private final ProductService productService;
-    @Autowired
-    public InventoryService(@Lazy ProductService productService) {
+
+    private final WarehouseService warehouseService;
+
+    public InventoryService(InventoryRepository inventoryRepository, @Lazy ProductService productService, WarehouseService warehouseService) {
+        this.inventoryRepository = inventoryRepository;
         this.productService = productService;
+        this.warehouseService = warehouseService;
     }
-    @Autowired
-    private WarehouseService warehouseService;
 
     public void addToInventory(InventoryDTO inventoryDTO) {
         // Retrieve Product and Warehouse entities from their respective services
@@ -52,6 +49,33 @@ public class InventoryService {
 
         // Save Inventory entity to database
         inventoryRepository.save(inventory);
+
+    }
+
+    public boolean updateToInventory(InventoryDTO inventoryDTO) {
+
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID())).orElse(null);
+        if(byId != null) {
+            byId.setQuantity(inventoryDTO.getQuantity());
+            // Save Inventory entity to database
+            inventoryRepository.save(byId);
+            return true;
+        }
+        return false;
+
+    }
+
+    public void deleteFromInventory(InventoryDTO inventoryDTO) {
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID())).orElse(null);
+        if(byId != null) {
+            inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID()));
+        }
+
+    }
+
+    public void deleteFromInventoryBySKU(Long sku) {
+
+        inventoryRepository.deleteBySKU(sku);
 
 
     }
@@ -90,33 +114,6 @@ public class InventoryService {
 
     }
 
-    public boolean updateToInventory(InventoryDTO inventoryDTO) {
-
-        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID())).orElse(null);
-        if(byId != null) {
-            byId.setQuantity(inventoryDTO.getQuantity());
-            // Save Inventory entity to database
-            inventoryRepository.save(byId);
-            return true;
-        }
-        return false;
-
-    }
-
-    public void deleteFromInventory(InventoryDTO inventoryDTO) {
-        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID())).orElse(null);
-        if(byId != null) {
-            inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID()));
-        }
-
-    }
-
-    public void deleteFromInventoryBySKU(Long sku) {
-
-        inventoryRepository.deleteBySKU(sku);
-
-
-    }
 
     public List<InventoryDTO> getEntryByProductCategory(String name) {
         List<Inventory> byProductCategory = inventoryRepository.findByProductCategory(name);

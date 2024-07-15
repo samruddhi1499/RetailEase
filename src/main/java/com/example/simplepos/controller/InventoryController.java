@@ -47,6 +47,17 @@ public class InventoryController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PutMapping("update-product")
+    public ResponseEntity<?> updateProduct(@ModelAttribute ProductDTO productDTO, @RequestParam("image") MultipartFile image) throws IOException, ParseException{
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(productDTO.getExpiryDate());
+        boolean b = productService.updateProduct(productDTO, expiryDate, image);
+        if(b)
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @GetMapping
     public List<InventoryDTO> getAllInventory() {
         return inventoryService.getAllInventory();
