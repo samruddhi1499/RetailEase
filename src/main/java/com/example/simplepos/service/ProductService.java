@@ -41,33 +41,39 @@ public class ProductService {
         return productRepository.findById(SKU).orElse(null);
     }
 
-    public void addProduct(ProductDTO productDTO, Date expiryDate) {
+    public boolean addProduct(ProductDTO productDTO, Date expiryDate) {
 
-        Product product = new Product();
-        Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
-
-        ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
+        Product product = productRepository.findById(productDTO.getProductSKU()).orElse(null);
+        if(product != null){
 
 
+            Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
 
-        product.setSKU(productDTO.getProductSKU());
-        product.setProductName(productDTO.getProductName());
-        product.setProductDescription(productDTO.getProductDescription());
-        product.setProductCategory(productCategory);
-        product.setProductCostPrice(productDTO.getProductCostPrice());
-        product.setProductSellingPrice(productDTO.getProductSellingPrice());
-        product.setIsExpirable(productDTO.getIsExpirable());
-        product.setExpiryDate(expiryDate);
-        product.setStorageType(productDTO.getStorageType());
-        if (productDTO.getProductImage().isEmpty()) {
-            product.setProductImage(null);
-        } else {
-            product.setProductImage(productDTO.getProductImage());
+            ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
+
+
+
+            product.setSKU(productDTO.getProductSKU());
+            product.setProductName(productDTO.getProductName());
+            product.setProductDescription(productDTO.getProductDescription());
+            product.setProductCategory(productCategory);
+            product.setProductCostPrice(productDTO.getProductCostPrice());
+            product.setProductSellingPrice(productDTO.getProductSellingPrice());
+            product.setIsExpirable(productDTO.getIsExpirable());
+            product.setExpiryDate(expiryDate);
+            product.setStorageType(productDTO.getStorageType());
+            if (productDTO.getProductImage().isEmpty()) {
+                product.setProductImage(null);
+            } else {
+                product.setProductImage(productDTO.getProductImage());
+            }
+            productRepository.save(product);
+
+            inventoryService.addToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
+
+            return true;
         }
-        productRepository.save(product);
-
-        inventoryService.addToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
-
+        return false;
     }
 
 

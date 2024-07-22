@@ -1,6 +1,7 @@
 package com.example.simplepos.mapper;
 
 import com.example.simplepos.dto.InventoryDTO;
+import com.example.simplepos.dto.ProductCategoryDTO;
 import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.dto.WarehouseDTO;
 import com.example.simplepos.entity.*;
@@ -35,7 +36,11 @@ public class DTOMapper {
         dto.setProductDescription(product.getProductDescription());
         dto.setStorageType(product.getStorageType());
         dto.setIsExpirable(product.getIsExpirable());
-        dto.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").format(product.getExpiryDate()));
+        if (product.getExpiryDate() != null) {
+            dto.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").format(product.getExpiryDate()));
+        } else {
+            dto.setExpiryDate(null);
+        }
         dto.setDiscountID(product.getDiscountID());
        // String encodedImage = (product.getProductImage() != null) ? encodeImageToBase64(product.getProductImage()) : null;
         dto.setProductImage(product.getProductImage());
@@ -47,10 +52,6 @@ public class DTOMapper {
         return dto;
     }
 
-    private static String encodeImageToBase64(byte[] imageBytes) {
-        return Base64.getEncoder().encodeToString(imageBytes);
-    }
-
 
 
     public static WarehouseDTO toDTO(Warehouse warehouse) {
@@ -59,6 +60,14 @@ public class DTOMapper {
         dto.setWarehouseName(warehouse.getWarehouseName());
         return dto;
     }
+
+    public static ProductCategoryDTO toDTO(ProductCategory productCategory) {
+        ProductCategoryDTO dto = new ProductCategoryDTO();
+        dto.setProductCategoryId(productCategory.getProductCategoryID());
+        dto.setProductCategoryName(productCategory.getCategoryName());
+        return dto;
+    }
+
 //
 //    public static Inventory toEntity(InventoryDTO dto) {
 //        Inventory inventory = new Inventory();

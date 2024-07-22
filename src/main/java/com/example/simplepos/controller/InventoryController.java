@@ -30,12 +30,12 @@ public class InventoryController {
         this.productService = productService;
     }
 
-    @PostMapping
-    public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) {
-        inventoryService.addToInventory(inventoryDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
-
-    }
+//    @PostMapping
+//    public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) {
+//        inventoryService.addToInventory(inventoryDTO);
+//        return new ResponseEntity<>(HttpStatus.CREATED);
+//
+//    }
 
     @PostMapping("add-product")
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
@@ -44,10 +44,9 @@ public class InventoryController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
              expiryDate= sdf.parse(productDTO.getExpiryDate());
         }
-        productService.addProduct(productDTO, expiryDate);
-
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        if(productService.addProduct(productDTO, expiryDate))
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping("update-product")
