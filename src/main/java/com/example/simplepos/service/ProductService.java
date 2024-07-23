@@ -43,10 +43,10 @@ public class ProductService {
 
     public boolean addProduct(ProductDTO productDTO, Date expiryDate) {
 
-        Product product = productRepository.findById(productDTO.getProductSKU()).orElse(null);
-        if(product != null){
+        Product productCheck = productRepository.findById(productDTO.getProductSKU()).orElse(null);
+        if(productCheck == null){
 
-
+            Product product = new Product();
             Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
 
             ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
