@@ -37,7 +37,7 @@ public class InventoryController {
 //
 //    }
 
-    @PostMapping("add-product")
+    @PostMapping("/add-product")
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
         Date expiryDate = null;
         if(productDTO.getIsExpirable()){
@@ -49,7 +49,7 @@ public class InventoryController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("update-product")
+    @PutMapping("/update-product")
     public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException{
 
         Date expiryDate = null;
@@ -63,53 +63,55 @@ public class InventoryController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PutMapping("/update-inventory")
+    public ResponseEntity<?> updateInventory(@RequestBody InventoryDTO inventoryDTO) {
+        if(inventoryService.updateToInventory(inventoryDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+    }
+
     @GetMapping
     public List<InventoryDTO> getAllInventory() {
         return inventoryService.getAllInventory();
     }
 
-    @GetMapping("product/{SKU}")
+    @GetMapping("/product/{SKU}")
     public ResponseEntity<?> getEntryById(@PathVariable Long SKU){
 
         return new ResponseEntity<>(inventoryService.getEntryById(SKU),HttpStatus.OK);
     }
 
-    @GetMapping("warehouse/{warehouseID}")
+    @GetMapping("/warehouse/{warehouseID}")
     public ResponseEntity<?> getEntryByWarehouseId(@PathVariable Long warehouseID){
 
         return new ResponseEntity<>(inventoryService.getEntryByWarehouseId(warehouseID),HttpStatus.OK);
     }
 
-    @GetMapping("product/{SKU}/warehouse/{warehouseID}")
+    @GetMapping("/product/{SKU}/warehouse/{warehouseID}")
     public ResponseEntity<?> getEntryByPK(@PathVariable Integer warehouseID, @PathVariable Long SKU){
 
         return new ResponseEntity<>(inventoryService.getEntryByPK(warehouseID,SKU),HttpStatus.OK);
     }
 
-    @GetMapping("product-category/{name}")
+    @GetMapping("/product-category/{name}")
     public ResponseEntity<?> getEntryByProductCategory(@PathVariable String name){
 
         return new ResponseEntity<>(inventoryService.getEntryByProductCategory(name),HttpStatus.OK);
     }
 
-    @GetMapping("product-name/{name}")
+    @GetMapping("/product-name/{name}")
     public ResponseEntity<?> getEntryByProductName(@PathVariable String name){
 
         return new ResponseEntity<>(inventoryService.getEntryByProductName(name),HttpStatus.OK);
     }
-    @GetMapping("lower/{lowerEnd}/higher/{higherEnd}")
+    @GetMapping("/lower/{lowerEnd}/higher/{higherEnd}")
     public ResponseEntity<?> getEntryByPrice(@PathVariable Double lowerEnd, @PathVariable Double higherEnd){
 
         return new ResponseEntity<>(inventoryService.getEntryByPrice(lowerEnd,higherEnd),HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<?> updateInventory(@RequestBody InventoryDTO inventoryDTO) {
-        if(inventoryService.updateToInventory(inventoryDTO))
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-    }
 
     @DeleteMapping
     public ResponseEntity<?> deleteInventory(@RequestBody InventoryDTO inventoryDTO) {

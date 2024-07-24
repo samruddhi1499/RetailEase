@@ -51,8 +51,6 @@ public class ProductService {
 
             ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
 
-
-
             product.setSKU(productDTO.getProductSKU());
             product.setProductName(productDTO.getProductName());
             product.setProductDescription(productDTO.getProductDescription());
@@ -101,7 +99,7 @@ public class ProductService {
             product.setProductCostPrice(productDTO.getProductCostPrice() != null && productDTO.getProductCostPrice() > 0 ? productDTO.getProductCostPrice() : product.getProductCostPrice());
             product.setProductSellingPrice(productDTO.getProductSellingPrice() != null && productDTO.getProductSellingPrice() > 0 ? productDTO.getProductSellingPrice() : product.getProductSellingPrice());
             product.setIsExpirable(productDTO.getIsExpirable() instanceof Boolean  ? productDTO.getIsExpirable() : product.getIsExpirable());
-            product.setExpiryDate(expirayDate instanceof Date ? expirayDate : product.getExpiryDate());
+            product.setExpiryDate(expirayDate != null ? expirayDate : product.getExpiryDate());
             product.setStorageType(productDTO.getStorageType() != null && !productDTO.getStorageType().isEmpty() ? productDTO.getStorageType() : product.getStorageType());
             product.setProductImage(productDTO.getProductImage() != null ? productDTO.getProductImage(): product.getProductImage());
             productRepository.save(product);

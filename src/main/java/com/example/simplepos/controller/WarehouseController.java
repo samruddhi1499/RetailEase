@@ -1,10 +1,7 @@
 package com.example.simplepos.controller;
 
-import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.dto.WarehouseDTO;
-import com.example.simplepos.service.ProductService;
 import com.example.simplepos.service.WarehouseService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +12,12 @@ import java.util.List;
 @RequestMapping("/api-warehouse")
 public class WarehouseController {
 
-    @Autowired
-    private WarehouseService warehouseService;
+
+    private final WarehouseService warehouseService;
+
+    public WarehouseController(WarehouseService warehouseService) {
+        this.warehouseService = warehouseService;
+    }
 
     @PostMapping
     public ResponseEntity<?> addWarehouse(@RequestBody WarehouseDTO warehouseDTO){
