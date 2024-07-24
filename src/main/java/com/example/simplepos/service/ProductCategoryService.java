@@ -32,11 +32,19 @@ public class ProductCategoryService {
 
     }
 
-    public void addCategory(ProductCategoryDTO categoryDTO) {
+    public boolean addCategory(ProductCategoryDTO categoryDTO) {
 
-        ProductCategory productCategory = new ProductCategory();
-        productCategory.setCategoryName(categoryDTO.getProductCategoryName());
-        productCategoryRepository.save(productCategory);
+        ProductCategory productCategoryCheck = productCategoryRepository.findByCategoryName(categoryDTO.getProductCategoryName());
+
+        if(productCategoryCheck == null){
+
+            ProductCategory productCategory = new ProductCategory();
+            productCategory.setCategoryName(categoryDTO.getProductCategoryName());
+            productCategoryRepository.save(productCategory);
+
+            return true;
+        }
+        return false;
 
     }
 

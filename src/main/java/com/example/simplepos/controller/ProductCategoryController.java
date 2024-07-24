@@ -31,9 +31,9 @@ public class ProductCategoryController {
     @PostMapping
     public ResponseEntity<?> addCategory(@RequestBody ProductCategoryDTO categoryDTO){
 
-        productCategoryService.addCategory(categoryDTO);
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        if(productCategoryService.addCategory(categoryDTO))
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PutMapping
