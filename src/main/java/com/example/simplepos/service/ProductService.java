@@ -4,17 +4,14 @@ import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.ProductCategory;
-import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.ProductRepository;
 import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ProductService {
@@ -37,8 +34,8 @@ public class ProductService {
         this.inventoryService = inventoryService;
     }
 
-    public Product getProductById(Long SKU) {
-        return productRepository.findById(SKU).orElse(null);
+    public Product getProductById(Long sku) {
+        return productRepository.findById(sku).orElse(null);
     }
 
     public boolean addProduct(ProductDTO productDTO, Date expiryDate) {
@@ -85,7 +82,7 @@ public class ProductService {
 //
 //    }
 
-    public boolean updateProduct(ProductDTO productDTO, Date expirayDate) throws IOException {
+    public boolean updateProduct(ProductDTO productDTO, Date expirayDate) {
 
         Product product = productRepository.findById(productDTO.getProductSKU()).orElse(null);
         Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
@@ -112,11 +109,13 @@ public class ProductService {
 
     }
 
-    public void deleteProduct(ProductDTO productDTO) {
-        inventoryService.deleteFromInventoryBySKU(productDTO.getProductSKU());
-        Product byId = productRepository.findById(productDTO.getProductSKU()).orElse(null);
-        if(byId != null) {
+    public boolean deleteProduct(ProductDTO productDTO) {
+        List<InventoryDTO> entryById = inventoryService.getEntryById(productDTO.getProductSKU());
+        if( entryById.isEmpty() ){
             productRepository.deleteById(productDTO.getProductSKU());
+            return true;
         }
+        return false;
+
     }
 }

@@ -73,12 +73,6 @@ public class InventoryService {
 
     }
 
-    public void deleteFromInventoryBySKU(Long sku) {
-
-        inventoryRepository.deleteBySKU(sku);
-
-
-    }
 
 
     public List<InventoryDTO> getAllInventory() {

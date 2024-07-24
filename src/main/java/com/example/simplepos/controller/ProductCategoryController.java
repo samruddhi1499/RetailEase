@@ -46,13 +46,13 @@ public class ProductCategoryController {
 
     }
 
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteCategory(@RequestParam Integer id){
-//
-//        productCategoryService.deleteCategory(id);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//
-//
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCategory(@PathVariable Integer id){
+
+        if( productCategoryService.deleteCategory(id) )
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
 }

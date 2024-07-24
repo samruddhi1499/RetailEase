@@ -1,9 +1,11 @@
 package com.example.simplepos.service;
 
 import com.example.simplepos.dto.ProductCategoryDTO;
+import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.ProductCategory;
 import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.ProductCategoryRepository;
+import com.example.simplepos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +17,11 @@ public class ProductCategoryService {
 
 
     private final ProductCategoryRepository productCategoryRepository;
+    private final ProductRepository productRepository;
 
-    public ProductCategoryService(ProductCategoryRepository productCategoryRepository) {
+    public ProductCategoryService(ProductCategoryRepository productCategoryRepository, ProductRepository productRepository) {
         this.productCategoryRepository = productCategoryRepository;
+        this.productRepository = productRepository;
     }
 
     public ProductCategory getProductCategoryByName(String productCategoryName){
@@ -57,6 +61,20 @@ public class ProductCategoryService {
             productCategory.setCategoryName(categoryDTO.getProductCategoryName());
             productCategoryRepository.save(productCategory);
             return true;
+        }
+        return false;
+
+    }
+
+    public boolean deleteCategory(Integer id) {
+
+        List<Product> byCategoryId = productRepository.findByCategoryId(id);
+
+        if( byCategoryId.isEmpty() ){
+
+            productCategoryRepository.deleteById(id);
+            return true;
+
         }
         return false;
 

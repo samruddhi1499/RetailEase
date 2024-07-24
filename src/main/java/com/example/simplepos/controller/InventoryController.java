@@ -49,19 +49,6 @@ public class InventoryController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/update-product")
-    public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException{
-
-        Date expiryDate = null;
-        if(productDTO.getExpiryDate() != null){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            expiryDate = sdf.parse(productDTO.getExpiryDate());
-        }
-        boolean b = productService.updateProduct(productDTO, expiryDate);
-        if(b)
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
 
     @PutMapping("/update-inventory")
     public ResponseEntity<?> updateInventory(@RequestBody InventoryDTO inventoryDTO) {
