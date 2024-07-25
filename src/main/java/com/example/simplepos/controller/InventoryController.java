@@ -58,7 +58,7 @@ public class InventoryController {
 
     }
 
-    @GetMapping
+    @GetMapping("/all-inventory")
     public List<InventoryDTO> getAllInventory() {
         return inventoryService.getAllInventory();
     }
