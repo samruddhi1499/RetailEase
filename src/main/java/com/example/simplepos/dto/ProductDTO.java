@@ -3,10 +3,7 @@ package com.example.simplepos.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,7 +17,7 @@ public class ProductDTO {
     private String productDescription;
     private String storageType;
     private Boolean isExpirable;
-    private String expiryDate; // Change to String
+    private String expiryDate;
     private Integer discountID;
     private String productCategoryName;
     private Integer productQuantity;

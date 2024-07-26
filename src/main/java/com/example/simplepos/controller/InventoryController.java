@@ -30,12 +30,12 @@ public class InventoryController {
         this.productService = productService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) {
-//        inventoryService.addToInventory(inventoryDTO);
-//        return new ResponseEntity<>(HttpStatus.CREATED);
-//
-//    }
+    @PostMapping
+    public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) {
+        inventoryService.addToInventory(inventoryDTO);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+
+    }
 
     @PostMapping("/add-product")
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {

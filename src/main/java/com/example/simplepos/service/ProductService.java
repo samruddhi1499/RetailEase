@@ -4,6 +4,7 @@ import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.ProductCategory;
+import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.ProductRepository;
 import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -73,14 +75,14 @@ public class ProductService {
 
 
 
-//    public List<ProductDTO> getAllProducts() {
-//
-//        List<Product> allProducts = productRepository.findAll();
-//        return allProducts.stream()
-//                .map(DTOMapper::toDTO)
-//                .collect(Collectors.toList());
-//
-//    }
+    public List<ProductDTO> getAllProducts() {
+
+        List<Product> allProducts = productRepository.findAll();
+        return allProducts.stream()
+                .map(DTOMapper::toDTO)
+                .collect(Collectors.toList());
+
+    }
 
     public boolean updateProduct(ProductDTO productDTO, Date expirayDate) {
 
@@ -101,7 +103,7 @@ public class ProductService {
             product.setProductImage(productDTO.getProductImage() != null ? productDTO.getProductImage(): product.getProductImage());
             productRepository.save(product);
 
-            inventoryService.updateToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
+            //inventoryService.updateToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
 
             return true;
         }

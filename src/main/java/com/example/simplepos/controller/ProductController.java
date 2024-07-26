@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api-product")
@@ -23,13 +24,13 @@ public class ProductController {
     }
 
 
-//    @GetMapping
-//    public ResponseEntity<?> getAllProduct(){
-//
-//        List<ProductDTO> productDTO = productService.getAllProducts();
-//
-//        return new ResponseEntity<>(productDTO,HttpStatus.OK);
-//    }
+    @GetMapping("/all-products")
+    public ResponseEntity<?> getAllProduct(){
+
+        List<ProductDTO> productDTO = productService.getAllProducts();
+
+        return new ResponseEntity<>(productDTO,HttpStatus.OK);
+    }
 
     @PutMapping("/update-product")
     public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
