@@ -51,11 +51,8 @@ public class InventoryService {
         inventory.setWarehouse(warehouse);
         if (product.getIsExpirable()) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-           // inventory.setExpiryDate(sdf.parse(inventoryDTO.getExpiryDate()));
             id.setExpiryDate(sdf.parse(inventoryDTO.getExpiryDate()));
         } else {
-            // Use a far future date for non-expirable products
-            //inventory.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
             id.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
         }
 
@@ -66,8 +63,7 @@ public class InventoryService {
 
     public boolean updateToInventory(InventoryDTO inventoryDTO) throws ParseException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date expiryDate = sdf.parse(inventoryDTO.getExpiryDate());
+        Date expiryDate = convertToDate(inventoryDTO.getExpiryDate());
 
         Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if(byId != null) {
@@ -82,8 +78,7 @@ public class InventoryService {
 
     public void deleteFromInventory(InventoryDTO inventoryDTO) throws ParseException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date expiryDate = sdf.parse(inventoryDTO.getExpiryDate());
+        Date expiryDate = convertToDate(inventoryDTO.getExpiryDate());
         Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if(byId != null) {
             inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate));
@@ -152,5 +147,11 @@ public class InventoryService {
         return byProductCategory.stream()
                 .map(DTOMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    private Date convertToDate(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(date);
+        return expiryDate;
     }
 }
