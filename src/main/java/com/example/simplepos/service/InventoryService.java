@@ -8,11 +8,14 @@ import com.example.simplepos.entity.Warehouse;
 import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.InventoryRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +35,7 @@ public class InventoryService {
         this.warehouseService = warehouseService;
     }
 
-    public void addToInventory(InventoryDTO inventoryDTO) {
+    public void addToInventory(InventoryDTO inventoryDTO) throws ParseException {
         // Retrieve Product and Warehouse entities from their respective services
         Product product = productService.getProductById(inventoryDTO.getProductSKU());
         Warehouse warehouse = warehouseService.getWarehouseById(inventoryDTO.getWarehouseID());
@@ -46,15 +49,27 @@ public class InventoryService {
         inventory.setQuantity(inventoryDTO.getQuantity());
         inventory.setProduct(product);
         inventory.setWarehouse(warehouse);
+        if (product.getIsExpirable()) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+           // inventory.setExpiryDate(sdf.parse(inventoryDTO.getExpiryDate()));
+            id.setExpiryDate(sdf.parse(inventoryDTO.getExpiryDate()));
+        } else {
+            // Use a far future date for non-expirable products
+            //inventory.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
+            id.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
+        }
 
         // Save Inventory entity to database
         inventoryRepository.save(inventory);
 
     }
 
-    public boolean updateToInventory(InventoryDTO inventoryDTO) {
+    public boolean updateToInventory(InventoryDTO inventoryDTO) throws ParseException {
 
-        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID())).orElse(null);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(inventoryDTO.getExpiryDate());
+
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if(byId != null) {
             byId.setQuantity(inventoryDTO.getQuantity());
             // Save Inventory entity to database
@@ -65,10 +80,13 @@ public class InventoryService {
 
     }
 
-    public void deleteFromInventory(InventoryDTO inventoryDTO) {
-        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID())).orElse(null);
+    public void deleteFromInventory(InventoryDTO inventoryDTO) throws ParseException {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date expiryDate = sdf.parse(inventoryDTO.getExpiryDate());
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if(byId != null) {
-            inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID()));
+            inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate));
         }
 
     }
@@ -99,8 +117,8 @@ public class InventoryService {
                 .collect(Collectors.toList());
     }
 
-    public InventoryDTO getEntryByPK(Integer warehouseID, Long sku) {
-        Inventory byId = inventoryRepository.findById(new InventoryPKId(sku, warehouseID)).orElse(null);
+    public InventoryDTO getEntryByPK(Integer warehouseID, Long sku, Date expiryDate) {
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(sku, warehouseID, expiryDate)).orElse(null);
 
         if(byId == null)
             return null;

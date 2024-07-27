@@ -31,7 +31,7 @@ public class InventoryController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) {
+    public ResponseEntity<?> addInventory(@RequestBody InventoryDTO inventoryDTO) throws ParseException {
         inventoryService.addToInventory(inventoryDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -39,19 +39,19 @@ public class InventoryController {
 
     @PostMapping("/add-product")
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
-        Date expiryDate = null;
-        if(productDTO.getIsExpirable()){
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-             expiryDate= sdf.parse(productDTO.getExpiryDate());
-        }
-        if(productService.addProduct(productDTO, expiryDate))
+//        Date expiryDate = null;
+//        if(productDTO.getIsExpirable()){
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//             expiryDate= sdf.parse(productDTO.getExpiryDate());
+//        }
+        if(productService.addProduct(productDTO))
             return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 
     @PutMapping("/update-inventory")
-    public ResponseEntity<?> updateInventory(@RequestBody InventoryDTO inventoryDTO) {
+    public ResponseEntity<?> updateInventory(@RequestBody InventoryDTO inventoryDTO) throws ParseException {
         if(inventoryService.updateToInventory(inventoryDTO))
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -75,10 +75,10 @@ public class InventoryController {
         return new ResponseEntity<>(inventoryService.getEntryByWarehouseId(warehouseID),HttpStatus.OK);
     }
 
-    @GetMapping("/product/{SKU}/warehouse/{warehouseID}")
-    public ResponseEntity<?> getEntryByPK(@PathVariable Integer warehouseID, @PathVariable Long SKU){
+    @GetMapping("/product/{SKU}/warehouse/{warehouseID}/expiry/{expiryDate}")
+    public ResponseEntity<?> getEntryByPK(@PathVariable Integer warehouseID, @PathVariable Long SKU,@PathVariable Date expiryDate){
 
-        return new ResponseEntity<>(inventoryService.getEntryByPK(warehouseID,SKU),HttpStatus.OK);
+        return new ResponseEntity<>(inventoryService.getEntryByPK(warehouseID,SKU,expiryDate),HttpStatus.OK);
     }
 
     @GetMapping("/product-category/{name}")
@@ -101,7 +101,7 @@ public class InventoryController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deleteInventory(@RequestBody InventoryDTO inventoryDTO) {
+    public ResponseEntity<?> deleteInventory(@RequestBody InventoryDTO inventoryDTO) throws ParseException {
         inventoryService.deleteFromInventory(inventoryDTO);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 

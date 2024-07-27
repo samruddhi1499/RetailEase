@@ -10,6 +10,7 @@ import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class ProductService {
         return productRepository.findById(sku).orElse(null);
     }
 
-    public boolean addProduct(ProductDTO productDTO, Date expiryDate) {
+    public boolean addProduct(ProductDTO productDTO) throws ParseException {
 
         Product productCheck = productRepository.findById(productDTO.getProductSKU()).orElse(null);
         if(productCheck == null){
@@ -57,7 +58,6 @@ public class ProductService {
             product.setProductCostPrice(productDTO.getProductCostPrice());
             product.setProductSellingPrice(productDTO.getProductSellingPrice());
             product.setIsExpirable(productDTO.getIsExpirable());
-            product.setExpiryDate(expiryDate);
             product.setStorageType(productDTO.getStorageType());
             if (productDTO.getProductImage().isEmpty()) {
                 product.setProductImage(null);
@@ -66,7 +66,7 @@ public class ProductService {
             }
             productRepository.save(product);
 
-            inventoryService.addToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
+            inventoryService.addToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),productDTO.getExpiryDate(),null,null));
 
             return true;
         }
@@ -98,7 +98,6 @@ public class ProductService {
             product.setProductCostPrice(productDTO.getProductCostPrice() != null && productDTO.getProductCostPrice() > 0 ? productDTO.getProductCostPrice() : product.getProductCostPrice());
             product.setProductSellingPrice(productDTO.getProductSellingPrice() != null && productDTO.getProductSellingPrice() > 0 ? productDTO.getProductSellingPrice() : product.getProductSellingPrice());
             product.setIsExpirable(productDTO.getIsExpirable() instanceof Boolean  ? productDTO.getIsExpirable() : product.getIsExpirable());
-            product.setExpiryDate(expirayDate != null ? expirayDate : product.getExpiryDate());
             product.setStorageType(productDTO.getStorageType() != null && !productDTO.getStorageType().isEmpty() ? productDTO.getStorageType() : product.getStorageType());
             product.setProductImage(productDTO.getProductImage() != null ? productDTO.getProductImage(): product.getProductImage());
             productRepository.save(product);

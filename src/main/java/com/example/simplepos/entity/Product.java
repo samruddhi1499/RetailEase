@@ -3,7 +3,6 @@ package com.example.simplepos.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -24,7 +23,6 @@ public class Product {
     private String productDescription;
     private String storageType;
     private Boolean isExpirable;
-    private Date expiryDate;
     private Integer discountID;
 
     @ManyToOne
@@ -37,6 +35,4 @@ public class Product {
     @Lob
     @Column(name = "productImage", columnDefinition = "LONGTEXT")
     private String productImage;  // Image data
-
-
 }

@@ -22,6 +22,11 @@ public class DTOMapper {
         dto.setProductSKU(inventory.getId().getProductSKU());
         dto.setWarehouseID(inventory.getId().getWarehouseID());
         dto.setQuantity(inventory.getQuantity());
+        if (inventory.getId().getExpiryDate() != null) {
+            dto.setExpiryDate(String.valueOf(inventory.getId().getExpiryDate()));
+        } else {
+            dto.setExpiryDate(null);
+        }
         dto.setProduct(toDTO(inventory.getProduct()));
         dto.setWarehouse(toDTO(inventory.getWarehouse()));
         return dto;
@@ -36,11 +41,7 @@ public class DTOMapper {
         dto.setProductDescription(product.getProductDescription());
         dto.setStorageType(product.getStorageType());
         dto.setIsExpirable(product.getIsExpirable());
-        if (product.getExpiryDate() != null) {
-            dto.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").format(product.getExpiryDate()));
-        } else {
-            dto.setExpiryDate(null);
-        }
+
         dto.setDiscountID(product.getDiscountID());
        // String encodedImage = (product.getProductImage() != null) ? encodeImageToBase64(product.getProductImage()) : null;
         dto.setProductImage(product.getProductImage());
