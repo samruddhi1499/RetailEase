@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDTO {
+public class ProductDTOGet {
 
     private Long productSKU;
     private String productName;
@@ -17,11 +17,8 @@ public class ProductDTO {
     private String productDescription;
     private String storageType;
     private Boolean isExpirable;
-    private String expiryDate;
     private Integer discountID;
     private String productCategoryName;
-    private Integer productQuantity;
-    private String warehouseName;
     private String productImage;
 
 }

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +13,6 @@ public class InventoryDTO {
     private Integer warehouseID;
     private int quantity;
     private String expiryDate;
-    private ProductDTO product;
+    private ProductDTOGet product;
     private WarehouseDTO warehouse;
 }

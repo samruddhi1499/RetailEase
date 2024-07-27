@@ -1,11 +1,8 @@
 package com.example.simplepos.service;
 
-import com.example.simplepos.dto.ProductDTO;
 import com.example.simplepos.dto.WarehouseDTO;
-import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.Warehouse;
 import com.example.simplepos.mapper.DTOMapper;
-import com.example.simplepos.repository.ProductRepository;
 import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,16 +1,9 @@
 package com.example.simplepos.mapper;
 
-import com.example.simplepos.dto.InventoryDTO;
-import com.example.simplepos.dto.ProductCategoryDTO;
-import com.example.simplepos.dto.ProductDTO;
-import com.example.simplepos.dto.WarehouseDTO;
+import com.example.simplepos.dto.*;
 import com.example.simplepos.entity.*;
 import com.example.simplepos.service.ProductCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.stream.Collectors;
 
 public class DTOMapper {
 
@@ -27,13 +20,13 @@ public class DTOMapper {
         } else {
             dto.setExpiryDate(null);
         }
-        dto.setProduct(toDTO(inventory.getProduct()));
+        dto.setProduct(toDTOGet(inventory.getProduct()));
         dto.setWarehouse(toDTO(inventory.getWarehouse()));
         return dto;
     }
 
-    public static ProductDTO toDTO(Product product) {
-        ProductDTO dto = new ProductDTO();
+    public static ProductDTOPost toDTO(Product product) {
+        ProductDTOPost dto = new ProductDTOPost();
         dto.setProductSKU(product.getSKU());
         dto.setProductName(product.getProductName());
         dto.setProductCostPrice(product.getProductCostPrice());
@@ -44,6 +37,27 @@ public class DTOMapper {
 
         dto.setDiscountID(product.getDiscountID());
        // String encodedImage = (product.getProductImage() != null) ? encodeImageToBase64(product.getProductImage()) : null;
+        dto.setProductImage(product.getProductImage());
+
+
+        if (product.getProductCategory() != null) {
+            dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
+        }
+        return dto;
+    }
+
+    public static ProductDTOGet toDTOGet(Product product) {
+        ProductDTOGet dto = new ProductDTOGet();
+        dto.setProductSKU(product.getSKU());
+        dto.setProductName(product.getProductName());
+        dto.setProductCostPrice(product.getProductCostPrice());
+        dto.setProductSellingPrice(product.getProductSellingPrice());
+        dto.setProductDescription(product.getProductDescription());
+        dto.setStorageType(product.getStorageType());
+        dto.setIsExpirable(product.getIsExpirable());
+
+        dto.setDiscountID(product.getDiscountID());
+        // String encodedImage = (product.getProductImage() != null) ? encodeImageToBase64(product.getProductImage()) : null;
         dto.setProductImage(product.getProductImage());
 
 

@@ -34,5 +34,5 @@ public class Product {
 
     @Lob
     @Column(name = "productImage", columnDefinition = "LONGTEXT")
-    private String productImage;  // Image data
+    private String productImage;
 }

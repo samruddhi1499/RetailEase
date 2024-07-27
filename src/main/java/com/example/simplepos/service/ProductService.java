@@ -1,7 +1,8 @@
 package com.example.simplepos.service;
 
 import com.example.simplepos.dto.InventoryDTO;
-import com.example.simplepos.dto.ProductDTO;
+import com.example.simplepos.dto.ProductDTOGet;
+import com.example.simplepos.dto.ProductDTOPost;
 import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.ProductCategory;
 import com.example.simplepos.mapper.DTOMapper;
@@ -41,32 +42,32 @@ public class ProductService {
         return productRepository.findById(sku).orElse(null);
     }
 
-    public boolean addProduct(ProductDTO productDTO) throws ParseException {
+    public boolean addProduct(ProductDTOPost productDTOPost) throws ParseException {
 
-        Product productCheck = productRepository.findById(productDTO.getProductSKU()).orElse(null);
+        Product productCheck = productRepository.findById(productDTOPost.getProductSKU()).orElse(null);
         if(productCheck == null){
 
             Product product = new Product();
-            Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
+            Integer warehouseId = warehouseRepository.findByWarehouseName(productDTOPost.getWarehouseName());
 
-            ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
+            ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTOPost.getProductCategoryName());
 
-            product.setSKU(productDTO.getProductSKU());
-            product.setProductName(productDTO.getProductName());
-            product.setProductDescription(productDTO.getProductDescription());
+            product.setSKU(productDTOPost.getProductSKU());
+            product.setProductName(productDTOPost.getProductName());
+            product.setProductDescription(productDTOPost.getProductDescription());
             product.setProductCategory(productCategory);
-            product.setProductCostPrice(productDTO.getProductCostPrice());
-            product.setProductSellingPrice(productDTO.getProductSellingPrice());
-            product.setIsExpirable(productDTO.getIsExpirable());
-            product.setStorageType(productDTO.getStorageType());
-            if (productDTO.getProductImage().isEmpty()) {
+            product.setProductCostPrice(productDTOPost.getProductCostPrice());
+            product.setProductSellingPrice(productDTOPost.getProductSellingPrice());
+            product.setIsExpirable(productDTOPost.getIsExpirable());
+            product.setStorageType(productDTOPost.getStorageType());
+            if (productDTOPost.getProductImage().isEmpty()) {
                 product.setProductImage(null);
             } else {
-                product.setProductImage(productDTO.getProductImage());
+                product.setProductImage(productDTOPost.getProductImage());
             }
             productRepository.save(product);
 
-            inventoryService.addToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),productDTO.getExpiryDate(),null,null));
+            inventoryService.addToInventory(new InventoryDTO(productDTOPost.getProductSKU(),warehouseId, productDTOPost.getProductQuantity(), productDTOPost.getExpiryDate(),null,null));
 
             return true;
         }
@@ -75,31 +76,31 @@ public class ProductService {
 
 
 
-    public List<ProductDTO> getAllProducts() {
+    public List<ProductDTOGet> getAllProducts() {
 
         List<Product> allProducts = productRepository.findAll();
         return allProducts.stream()
-                .map(DTOMapper::toDTO)
+                .map(DTOMapper::toDTOGet)
                 .collect(Collectors.toList());
 
     }
 
-    public boolean updateProduct(ProductDTO productDTO, Date expirayDate) {
+    public boolean updateProduct(ProductDTOPost productDTOPost, Date expirayDate) {
 
-        Product product = productRepository.findById(productDTO.getProductSKU()).orElse(null);
-        Integer warehouseId = warehouseRepository.findByWarehouseName(productDTO.getWarehouseName());
+        Product product = productRepository.findById(productDTOPost.getProductSKU()).orElse(null);
+        Integer warehouseId = warehouseRepository.findByWarehouseName(productDTOPost.getWarehouseName());
 
         if(product != null){
-            ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTO.getProductCategoryName());
+            ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTOPost.getProductCategoryName());
 
-            product.setProductName(productDTO.getProductName() != null && !productDTO.getProductName().isEmpty() ? productDTO.getProductName() : product.getProductName());
-            product.setProductDescription(productDTO.getProductDescription() != null && !productDTO.getProductDescription().isEmpty() ? productDTO.getProductDescription() : product.getProductDescription());
-            product.setProductCategory(productDTO.getProductCategoryName() != null && productDTO.getProductCategoryName().isEmpty() ? productCategory : product.getProductCategory());
-            product.setProductCostPrice(productDTO.getProductCostPrice() != null && productDTO.getProductCostPrice() > 0 ? productDTO.getProductCostPrice() : product.getProductCostPrice());
-            product.setProductSellingPrice(productDTO.getProductSellingPrice() != null && productDTO.getProductSellingPrice() > 0 ? productDTO.getProductSellingPrice() : product.getProductSellingPrice());
-            product.setIsExpirable(productDTO.getIsExpirable() instanceof Boolean  ? productDTO.getIsExpirable() : product.getIsExpirable());
-            product.setStorageType(productDTO.getStorageType() != null && !productDTO.getStorageType().isEmpty() ? productDTO.getStorageType() : product.getStorageType());
-            product.setProductImage(productDTO.getProductImage() != null ? productDTO.getProductImage(): product.getProductImage());
+            product.setProductName(productDTOPost.getProductName() != null && !productDTOPost.getProductName().isEmpty() ? productDTOPost.getProductName() : product.getProductName());
+            product.setProductDescription(productDTOPost.getProductDescription() != null && !productDTOPost.getProductDescription().isEmpty() ? productDTOPost.getProductDescription() : product.getProductDescription());
+            product.setProductCategory(productDTOPost.getProductCategoryName() != null && productDTOPost.getProductCategoryName().isEmpty() ? productCategory : product.getProductCategory());
+            product.setProductCostPrice(productDTOPost.getProductCostPrice() != null && productDTOPost.getProductCostPrice() > 0 ? productDTOPost.getProductCostPrice() : product.getProductCostPrice());
+            product.setProductSellingPrice(productDTOPost.getProductSellingPrice() != null && productDTOPost.getProductSellingPrice() > 0 ? productDTOPost.getProductSellingPrice() : product.getProductSellingPrice());
+            product.setIsExpirable(productDTOPost.getIsExpirable() instanceof Boolean  ? productDTOPost.getIsExpirable() : product.getIsExpirable());
+            product.setStorageType(productDTOPost.getStorageType() != null && !productDTOPost.getStorageType().isEmpty() ? productDTOPost.getStorageType() : product.getStorageType());
+            product.setProductImage(productDTOPost.getProductImage() != null ? productDTOPost.getProductImage(): product.getProductImage());
             productRepository.save(product);
 
             //inventoryService.updateToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
@@ -110,10 +111,10 @@ public class ProductService {
 
     }
 
-    public boolean deleteProduct(ProductDTO productDTO) {
-        List<InventoryDTO> entryById = inventoryService.getEntryById(productDTO.getProductSKU());
+    public boolean deleteProduct(ProductDTOPost productDTOPost) {
+        List<InventoryDTO> entryById = inventoryService.getEntryById(productDTOPost.getProductSKU());
         if( entryById.isEmpty() ){
-            productRepository.deleteById(productDTO.getProductSKU());
+            productRepository.deleteById(productDTOPost.getProductSKU());
             return true;
         }
         return false;

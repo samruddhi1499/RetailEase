@@ -1,19 +1,15 @@
 package com.example.simplepos.controller;
 
 import com.example.simplepos.dto.InventoryDTO;
-import com.example.simplepos.dto.ProductDTO;
-import com.example.simplepos.entity.Inventory;
+import com.example.simplepos.dto.ProductDTOPost;
 import com.example.simplepos.service.InventoryService;
 import com.example.simplepos.service.ProductService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -38,13 +34,13 @@ public class InventoryController {
     }
 
     @PostMapping("/add-product")
-    public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTOPost productDTOPost) throws IOException, ParseException {
 //        Date expiryDate = null;
 //        if(productDTO.getIsExpirable()){
 //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 //             expiryDate= sdf.parse(productDTO.getExpiryDate());
 //        }
-        if(productService.addProduct(productDTO))
+        if(productService.addProduct(productDTOPost))
             return new ResponseEntity<>(HttpStatus.CREATED);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

@@ -1,6 +1,7 @@
 package com.example.simplepos.controller;
 
-import com.example.simplepos.dto.ProductDTO;
+import com.example.simplepos.dto.ProductDTOGet;
+import com.example.simplepos.dto.ProductDTOPost;
 import com.example.simplepos.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,20 +28,20 @@ public class ProductController {
     @GetMapping("/all-products")
     public ResponseEntity<?> getAllProduct(){
 
-        List<ProductDTO> productDTO = productService.getAllProducts();
+        List<ProductDTOGet> productDTOGet = productService.getAllProducts();
 
-        return new ResponseEntity<>(productDTO,HttpStatus.OK);
+        return new ResponseEntity<>(productDTOGet,HttpStatus.OK);
     }
 
     @PutMapping("/update-product")
-    public ResponseEntity<?> updateProduct(@RequestBody ProductDTO productDTO) throws IOException, ParseException {
+    public ResponseEntity<?> updateProduct(@RequestBody ProductDTOPost productDTOPost) throws IOException, ParseException {
 
         Date expiryDate = null;
-        if(productDTO.getExpiryDate() != null){
+        if(productDTOPost.getExpiryDate() != null){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            expiryDate = sdf.parse(productDTO.getExpiryDate());
+            expiryDate = sdf.parse(productDTOPost.getExpiryDate());
         }
-        boolean b = productService.updateProduct(productDTO, expiryDate);
+        boolean b = productService.updateProduct(productDTOPost, expiryDate);
         if(b)
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,8 +50,8 @@ public class ProductController {
 
 
     @DeleteMapping
-    public ResponseEntity<?> deleteProduct(@RequestBody ProductDTO productDTO){
-        if(productService.deleteProduct(productDTO))
+    public ResponseEntity<?> deleteProduct(@RequestBody ProductDTOPost productDTOPost){
+        if(productService.deleteProduct(productDTOPost))
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
