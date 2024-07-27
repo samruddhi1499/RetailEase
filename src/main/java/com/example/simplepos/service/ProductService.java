@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.text.ParseException;
-import java.util.Date;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,10 +85,9 @@ public class ProductService {
 
     }
 
-    public boolean updateProduct(ProductDTOPost productDTOPost, Date expirayDate) {
+    public boolean updateProduct(ProductDTOPost productDTOPost) {
 
         Product product = productRepository.findById(productDTOPost.getProductSKU()).orElse(null);
-        Integer warehouseId = warehouseRepository.findByWarehouseName(productDTOPost.getWarehouseName());
 
         if(product != null){
             ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTOPost.getProductCategoryName());
@@ -103,7 +102,6 @@ public class ProductService {
             product.setProductImage(productDTOPost.getProductImage() != null ? productDTOPost.getProductImage(): product.getProductImage());
             productRepository.save(product);
 
-            //inventoryService.updateToInventory(new InventoryDTO(productDTO.getProductSKU(),warehouseId,productDTO.getProductQuantity(),null,null));
 
             return true;
         }

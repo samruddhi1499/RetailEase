@@ -20,14 +20,14 @@ public class WarehouseController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addWarehouse(@RequestBody WarehouseDTO warehouseDTO){
+    public ResponseEntity<HttpStatus> addWarehouse(@RequestBody WarehouseDTO warehouseDTO){
 
         warehouseService.addWarehouse(warehouseDTO);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllWarehouse(){
+    public ResponseEntity<List<WarehouseDTO>> getAllWarehouse(){
 
         List<WarehouseDTO> warehouseDTOList = warehouseService.getAllWarehouse();
 
@@ -35,14 +35,14 @@ public class WarehouseController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateWarehouse(@RequestBody WarehouseDTO warehouseDTO){
+    public ResponseEntity<HttpStatus> updateWarehouse(@RequestBody WarehouseDTO warehouseDTO){
 
         warehouseService.updateWarehouse(warehouseDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteWarehouse(@RequestBody WarehouseDTO warehouseDTO){
+    public ResponseEntity<HttpStatus> deleteWarehouse(@RequestBody WarehouseDTO warehouseDTO){
 
         warehouseService.deleteWarehouse(warehouseDTO);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

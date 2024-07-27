@@ -151,7 +151,7 @@ public class InventoryService {
 
     private Date convertToDate(String date) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date expiryDate = sdf.parse(date);
-        return expiryDate;
+        return sdf.parse(date);
+
     }
 }

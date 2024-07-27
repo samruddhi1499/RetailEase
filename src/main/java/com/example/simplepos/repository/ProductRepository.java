@@ -1,7 +1,6 @@
 package com.example.simplepos.repository;
 
 import com.example.simplepos.entity.Product;
-import com.example.simplepos.entity.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
