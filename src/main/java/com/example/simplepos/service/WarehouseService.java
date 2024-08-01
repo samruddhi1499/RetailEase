@@ -52,4 +52,8 @@ public class WarehouseService {
         }
     }
 
+    public void deleteWarehouse(WarehouseDTO warehouseDTO) {
+
+        warehouseRepository.deleteById(warehouseDTO.getWarehouseID());
+    }
 }
