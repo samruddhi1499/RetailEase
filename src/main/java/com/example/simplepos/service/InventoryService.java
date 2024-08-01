@@ -63,7 +63,13 @@ public class InventoryService {
 
     public boolean updateToInventory(InventoryDTO inventoryDTO) throws ParseException {
 
-        Date expiryDate = convertToDate(inventoryDTO.getExpiryDate());
+        Date expiryDate;
+        if(inventoryDTO.getExpiryDate().isEmpty()){
+            expiryDate = new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31");
+        }
+        else{
+            expiryDate = convertToDate(inventoryDTO.getExpiryDate());
+        }
 
         Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if(byId != null) {
