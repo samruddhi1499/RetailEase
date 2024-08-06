@@ -14,10 +14,11 @@ public class ProductDTOGet {
     private String productName;
     private Double productCostPrice;
     private Double productSellingPrice;
+    private Double productDiscountPrice;
     private String productDescription;
     private String storageType;
     private Boolean isExpirable;
-    private Integer discountID;
+    private String discountName;
     private String productCategoryName;
     private String productImage;
 

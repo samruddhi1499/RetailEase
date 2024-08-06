@@ -3,17 +3,32 @@ package com.example.simplepos.mapper;
 import com.example.simplepos.dto.*;
 import com.example.simplepos.entity.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+
 public class DTOMapper {
 
 
 
-    public static InventoryDTO toDTO(Inventory inventory) {
+    public static InventoryDTO toDTO(Inventory inventory)  {
         InventoryDTO dto = new InventoryDTO();
         dto.setProductSKU(inventory.getId().getProductSKU());
         dto.setWarehouseID(inventory.getId().getWarehouseID());
         dto.setQuantity(inventory.getQuantity());
         if (inventory.getId().getExpiryDate() != null) {
             dto.setExpiryDate(String.valueOf(inventory.getId().getExpiryDate()));
+            LocalDate expiryDate = inventory.getId().getExpiryDate().toInstant().atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            LocalDate currentDate = LocalDate.now();
+            long daysBetween = ChronoUnit.DAYS.between(currentDate, expiryDate);
+            if(daysBetween < 20 && daysBetween > 0)
+                dto.setAboutToExpire(daysBetween +" to expire!!");
+            else if(daysBetween < 0)
+                dto.setAboutToExpire("Product is expired");
+            else
+                dto.setAboutToExpire("Not Expired");
+
         } else {
             dto.setExpiryDate(null);
         }
@@ -31,11 +46,11 @@ public class DTOMapper {
         dto.setProductDescription(product.getProductDescription());
         dto.setStorageType(product.getStorageType());
         dto.setIsExpirable(product.getIsExpirable());
-
-        dto.setDiscountID(product.getDiscountID());
         dto.setProductImage(product.getProductImage());
 
 
+        if(product.getDiscount() != null)
+            dto.setDiscountName(product.getDiscount().getDiscountName());
         if (product.getProductCategory() != null) {
             dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
         }
@@ -51,11 +66,12 @@ public class DTOMapper {
         dto.setProductDescription(product.getProductDescription());
         dto.setStorageType(product.getStorageType());
         dto.setIsExpirable(product.getIsExpirable());
+        dto.setProductDiscountPrice(product.getProductDiscountPrice());
 
-        dto.setDiscountID(product.getDiscountID());
         dto.setProductImage(product.getProductImage());
 
-
+        if(product.getDiscount() != null)
+            dto.setDiscountName(product.getDiscount().getDiscountName());
         if (product.getProductCategory() != null) {
             dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
         }
@@ -79,6 +95,18 @@ public class DTOMapper {
         dto.setProductCategoryName(productCategory.getCategoryName());
         return dto;
     }
+
+    public static DiscountDTO toDTO(Discount discount) {
+        DiscountDTO dto = new DiscountDTO();
+        dto.setDiscountId(discount.getDiscountId());
+        dto.setDiscountName(discount.getDiscountName());
+        dto.setDiscountPercent(discount.getDiscountPercent());
+        dto.setDiscountExpiryDate(discount.getDiscountExpiryDate());
+        dto.setIsActive(discount.getIsActive());
+        return dto;
+    }
+
+
 
 
 }

@@ -15,4 +15,5 @@ public class InventoryDTO {
     private String expiryDate;
     private ProductDTOGet product;
     private WarehouseDTO warehouse;
+    private String aboutToExpire;
 }

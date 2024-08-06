@@ -3,6 +3,7 @@ package com.example.simplepos.service;
 import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTOGet;
 import com.example.simplepos.dto.ProductDTOPost;
+import com.example.simplepos.entity.Discount;
 import com.example.simplepos.entity.Product;
 import com.example.simplepos.entity.ProductCategory;
 import com.example.simplepos.mapper.DTOMapper;
@@ -26,14 +27,15 @@ public class ProductService {
 
     private final ProductCategoryService productCategoryService;
 
-
+    private final DiscountService discountService;
     private final WarehouseRepository warehouseRepository;
 
     private final InventoryService inventoryService;
 
-    public ProductService(ProductRepository productRepository, ProductCategoryService productCategoryService, WarehouseRepository warehouseRepository, InventoryService inventoryService) {
+    public ProductService(ProductRepository productRepository, ProductCategoryService productCategoryService, DiscountService discountService, WarehouseRepository warehouseRepository, InventoryService inventoryService) {
         this.productRepository = productRepository;
         this.productCategoryService = productCategoryService;
+        this.discountService = discountService;
         this.warehouseRepository = warehouseRepository;
         this.inventoryService = inventoryService;
     }
@@ -51,6 +53,9 @@ public class ProductService {
             Integer warehouseId = warehouseRepository.findByWarehouseName(productDTOPost.getWarehouseName());
 
             ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTOPost.getProductCategoryName());
+            Discount discount = null;
+            if(!productDTOPost.getDiscountName().isEmpty())
+                discount = discountService.getDiscountByName(productDTOPost.getDiscountName());
 
             product.setSKU(productDTOPost.getProductSKU());
             product.setProductName(productDTOPost.getProductName());
@@ -60,6 +65,7 @@ public class ProductService {
             product.setProductSellingPrice(productDTOPost.getProductSellingPrice());
             product.setIsExpirable(productDTOPost.getIsExpirable());
             product.setStorageType(productDTOPost.getStorageType());
+            product.setDiscount(discount);
             if (productDTOPost.getProductImage().isEmpty()) {
                 product.setProductImage(null);
             } else {
@@ -67,7 +73,7 @@ public class ProductService {
             }
             productRepository.save(product);
 
-            inventoryService.addToInventory(new InventoryDTO(productDTOPost.getProductSKU(),warehouseId, productDTOPost.getProductQuantity(), productDTOPost.getExpiryDate(),null,null));
+            inventoryService.addToInventory(new InventoryDTO(productDTOPost.getProductSKU(),warehouseId, productDTOPost.getProductQuantity(), productDTOPost.getExpiryDate(),null,null,null));
 
             return true;
         }

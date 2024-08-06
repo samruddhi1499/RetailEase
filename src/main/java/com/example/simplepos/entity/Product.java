@@ -20,10 +20,14 @@ public class Product {
     private String productName;
     private Double productCostPrice;
     private Double productSellingPrice;
+    private Double productDiscountPrice;
     private String productDescription;
     private String storageType;
     private Boolean isExpirable;
-    private Integer discountID;
+
+    @ManyToOne
+    @JoinColumn(name = "discountId")
+    private Discount discount;
 
     @ManyToOne
     @JoinColumn(name = "productCategoryID")

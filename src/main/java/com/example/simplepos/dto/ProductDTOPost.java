@@ -18,7 +18,7 @@ public class ProductDTOPost {
     private String storageType;
     private Boolean isExpirable;
     private String expiryDate;
-    private Integer discountID;
+    private String discountName;
     private String productCategoryName;
     private Integer productQuantity;
     private String warehouseName;
