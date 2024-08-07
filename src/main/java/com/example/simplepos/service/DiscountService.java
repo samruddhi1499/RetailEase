@@ -8,6 +8,8 @@ import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.DiscountRepository;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,12 +44,24 @@ public class DiscountService {
             Discount discount = new Discount();
             discount.setDiscountName(discountDTO.getDiscountName());
             discount.setDiscountPercent(discountDTO.getDiscountPercent());
-            //discount.setIsActive(discount.getIsActive());
             discount.setDiscountExpiryDate(discountDTO.getDiscountExpiryDate());
+            Date todayDate = new Date();
+            discount.setIsActive(discount.getDiscountExpiryDate().compareTo(todayDate) != 0 && discount.getDiscountExpiryDate().compareTo(todayDate) >= 0);
             discountRepository.save(discount);
 
             return true;
         }
         return false;
+    }
+
+    public void checkIfActive() {
+        Date todayDate = new Date();
+        for (Discount discount : discountRepository.findAll()) {
+
+            discount.setIsActive(discount.getDiscountExpiryDate().compareTo(todayDate) != 0 && discount.getDiscountExpiryDate().compareTo(todayDate) >= 0);
+            discountRepository.save(discount);
+        }
+
+
     }
 }

@@ -84,6 +84,7 @@ public class ProductService {
 
     public List<ProductDTOGet> getAllProducts() {
 
+        discountService.checkIfActive();
         List<Product> allProducts = productRepository.findAll();
         return allProducts.stream()
                 .map(DTOMapper::toDTOGet)

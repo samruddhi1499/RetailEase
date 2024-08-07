@@ -48,9 +48,9 @@ public class DTOMapper {
         dto.setIsExpirable(product.getIsExpirable());
         dto.setProductImage(product.getProductImage());
 
-
-        if(product.getDiscount() != null)
+        if(product.getDiscount() != null && product.getDiscount().getIsActive()){
             dto.setDiscountName(product.getDiscount().getDiscountName());
+        }
         if (product.getProductCategory() != null) {
             dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
         }
@@ -66,12 +66,18 @@ public class DTOMapper {
         dto.setProductDescription(product.getProductDescription());
         dto.setStorageType(product.getStorageType());
         dto.setIsExpirable(product.getIsExpirable());
-        dto.setProductDiscountPrice(product.getProductDiscountPrice());
+
 
         dto.setProductImage(product.getProductImage());
 
         if(product.getDiscount() != null)
-            dto.setDiscountName(product.getDiscount().getDiscountName());
+            if(Boolean.TRUE.equals(product.getDiscount().getIsActive())){
+                dto.setDiscountName(product.getDiscount().getDiscountName());
+                dto.setProductDiscountPrice(product.getProductDiscountPrice());
+            }
+
+
+
         if (product.getProductCategory() != null) {
             dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
         }
