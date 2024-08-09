@@ -98,6 +98,7 @@ public class ProductService {
 
         if(product != null){
             ProductCategory productCategory = productCategoryService.getProductCategoryByName(productDTOPost.getProductCategoryName());
+            Discount discount = discountService.getDiscountByName(productDTOPost.getDiscountName());
 
             product.setProductName(productDTOPost.getProductName() != null && !productDTOPost.getProductName().isEmpty() ? productDTOPost.getProductName() : product.getProductName());
             product.setProductDescription(productDTOPost.getProductDescription() != null && !productDTOPost.getProductDescription().isEmpty() ? productDTOPost.getProductDescription() : product.getProductDescription());
@@ -107,6 +108,7 @@ public class ProductService {
             product.setIsExpirable(productDTOPost.getIsExpirable() instanceof Boolean  ? productDTOPost.getIsExpirable() : product.getIsExpirable());
             product.setStorageType(productDTOPost.getStorageType() != null && !productDTOPost.getStorageType().isEmpty() ? productDTOPost.getStorageType() : product.getStorageType());
             product.setProductImage(productDTOPost.getProductImage() != null ? productDTOPost.getProductImage(): product.getProductImage());
+            product.setDiscount(!productDTOPost.getDiscountName().isEmpty() && productDTOPost.getDiscountName() != null ? discount: product.getDiscount());
             productRepository.save(product);
 
 

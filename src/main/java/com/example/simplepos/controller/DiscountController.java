@@ -35,4 +35,24 @@ public class DiscountController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+
+    @PutMapping
+    public ResponseEntity<HttpStatus> updateDiscount(@RequestBody DiscountDTO discountDTO){
+        if(discountService.updateDiscount(discountDTO))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deleteCategory(@PathVariable Integer id){
+
+        if( discountService.deleteDiscount(id) )
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+
+    }
+
+
+
 }
