@@ -43,7 +43,7 @@ public class ProductController {
 
 
 
-    @DeleteMapping
+    @DeleteMapping("/delete-product")
     public ResponseEntity<HttpStatus> deleteProduct(@RequestBody ProductDTOPost productDTOPost){
         if(productService.deleteProduct(productDTOPost))
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

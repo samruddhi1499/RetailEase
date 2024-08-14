@@ -89,7 +89,7 @@ public class InventoryController {
 
 
 
-    @DeleteMapping
+    @DeleteMapping("/delete-inventory")
     public ResponseEntity<HttpStatus> deleteInventory(@RequestBody InventoryDTO inventoryDTO) throws ParseException {
         inventoryService.deleteFromInventory(inventoryDTO);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
