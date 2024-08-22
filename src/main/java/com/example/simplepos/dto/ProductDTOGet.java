@@ -20,6 +20,7 @@ public class ProductDTOGet {
     private Boolean isExpirable;
     private String discountName;
     private String productCategoryName;
+    private Integer productCategoryId;
     private String productImage;
 
 }

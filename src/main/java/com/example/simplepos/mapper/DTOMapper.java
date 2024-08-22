@@ -80,6 +80,7 @@ public class DTOMapper {
 
         if (product.getProductCategory() != null) {
             dto.setProductCategoryName(String.valueOf(product.getProductCategory().getCategoryName()));
+            dto.setProductCategoryId(product.getProductCategory().getProductCategoryID());
         }
         return dto;
     }
