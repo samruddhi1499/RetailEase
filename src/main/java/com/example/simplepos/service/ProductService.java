@@ -3,13 +3,13 @@ package com.example.simplepos.service;
 import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTOGet;
 import com.example.simplepos.dto.ProductDTOPost;
-import com.example.simplepos.entity.Discount;
-import com.example.simplepos.entity.Product;
-import com.example.simplepos.entity.ProductCategory;
+import com.example.simplepos.entity.*;
 import com.example.simplepos.mapper.DTOMapper;
+import com.example.simplepos.repository.InventoryRepository;
 import com.example.simplepos.repository.ProductRepository;
 import com.example.simplepos.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.text.ParseException;
@@ -32,12 +32,15 @@ public class ProductService {
 
     private final InventoryService inventoryService;
 
-    public ProductService(ProductRepository productRepository, ProductCategoryService productCategoryService, DiscountService discountService, WarehouseRepository warehouseRepository, InventoryService inventoryService) {
+    private final InventoryRepository inventoryRepository;
+
+    public ProductService(ProductRepository productRepository, ProductCategoryService productCategoryService, DiscountService discountService, WarehouseRepository warehouseRepository, InventoryService inventoryService, InventoryRepository inventoryRepository) {
         this.productRepository = productRepository;
         this.productCategoryService = productCategoryService;
         this.discountService = discountService;
         this.warehouseRepository = warehouseRepository;
         this.inventoryService = inventoryService;
+        this.inventoryRepository = inventoryRepository;
     }
 
     public Product getProductById(Long sku) {
@@ -118,13 +121,27 @@ public class ProductService {
 
     }
 
+    @Transactional
     public boolean deleteProduct(ProductDTOPost productDTOPost) {
         List<InventoryDTO> entryById = inventoryService.getEntryById(productDTOPost.getProductSKU());
         if( entryById.isEmpty() ){
             productRepository.deleteById(productDTOPost.getProductSKU());
             return true;
         }
-        return false;
+        else{
+            List<Inventory> bySKU = inventoryRepository.findBySKU(productDTOPost.getProductSKU());
+            for(Inventory lineItem : bySKU){
+                if(lineItem.getQuantity() == 0)
+                    inventoryRepository.deleteById(new InventoryPKId(lineItem.getId().getProductSKU(), lineItem.getId().getWarehouseID(), lineItem.getId().getExpiryDate()));
+            }
+            List<InventoryDTO> entry = inventoryService.getEntryById(productDTOPost.getProductSKU());
+            if(entry.isEmpty()){
+                productRepository.deleteById(productDTOPost.getProductSKU());
+                return true;
+            }
+
+            return false;
+        }
 
     }
 }
