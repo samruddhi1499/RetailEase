@@ -14,7 +14,10 @@ import java.util.List;
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, InventoryPKId>{
 
-    @Query(value = "SELECT * FROM inventory WHERE SKU = :paramValue", nativeQuery = true)
+    @Query(value = "SELECT * FROM inventory WHERE quantity != 0", nativeQuery = true)
+    List<Inventory> findByAllNotZero();
+
+    @Query(value = "SELECT * FROM inventory WHERE  SKU= :paramValue", nativeQuery = true)
     List<Inventory> findBySKU(@Param("paramValue") Long paramValue);
 
     @Query(value = "SELECT * FROM inventory WHERE warehouseID = :paramValue", nativeQuery = true)

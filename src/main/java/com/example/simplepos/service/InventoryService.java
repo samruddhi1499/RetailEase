@@ -95,7 +95,7 @@ public class InventoryService {
 
 
     public List<InventoryDTO> getAllInventory() {
-        List<Inventory> inventories = inventoryRepository.findAll();
+        List<Inventory> inventories = inventoryRepository.findByAllNotZero();
         return inventories.stream()
                 .map(DTOMapper::toDTO)
                 .collect(Collectors.toList());
