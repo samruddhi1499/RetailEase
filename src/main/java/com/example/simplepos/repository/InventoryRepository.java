@@ -52,6 +52,11 @@ public interface InventoryRepository extends JpaRepository<Inventory, InventoryP
     @Query(value = "DELETE FROM inventory WHERE SKU = :productSKU", nativeQuery = true)
     void deleteBySKU(@Param("productSKU") Long productSKU);
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM inventory WHERE quantity = 0", nativeQuery = true)
+    void deleteIfQuantityZero();
+
 
 
 }

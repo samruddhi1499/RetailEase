@@ -81,6 +81,7 @@ public class InventoryService {
             byId.setQuantity(inventoryDTO.getQuantity());
             // Save Inventory entity to database
             inventoryRepository.save(byId);
+            inventoryRepository.deleteIfQuantityZero();
             return true;
         }
         return false;
