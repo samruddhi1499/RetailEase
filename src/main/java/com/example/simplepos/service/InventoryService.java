@@ -35,7 +35,7 @@ public class InventoryService {
         this.warehouseService = warehouseService;
     }
 
-    public void addToInventory(InventoryDTO inventoryDTO) throws ParseException {
+    public boolean addToInventory(InventoryDTO inventoryDTO) throws ParseException {
         // Retrieve Product and Warehouse entities from their respective services
         Product product = productService.getProductById(inventoryDTO.getProductSKU());
         Warehouse warehouse = warehouseService.getWarehouseById(inventoryDTO.getWarehouseID());
@@ -53,11 +53,16 @@ public class InventoryService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             id.setExpiryDate(sdf.parse(inventoryDTO.getExpiryDate()));
         } else {
+
             id.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
+            Inventory byId = inventoryRepository.findById(id).orElse(null);
+            if (byId != null)
+                return false;
         }
 
         // Save Inventory entity to database
         inventoryRepository.save(inventory);
+        return true;
 
     }
 

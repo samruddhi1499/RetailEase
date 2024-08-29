@@ -27,8 +27,9 @@ public class InventoryController {
 
     @PostMapping("/add-inventory")
     public ResponseEntity<HttpStatus> addInventory(@RequestBody InventoryDTO inventoryDTO) throws ParseException {
-        inventoryService.addToInventory(inventoryDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        if(inventoryService.addToInventory(inventoryDTO))
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
 
