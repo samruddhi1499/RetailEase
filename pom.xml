@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>simplepos</artifactId>
+	<artifactId>retailEase</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>simplepos</name>
+	<name>retailEase</name>
 	<description>This is a advanced POS system</description>
 	<properties>
 		<java.version>17</java.version>
