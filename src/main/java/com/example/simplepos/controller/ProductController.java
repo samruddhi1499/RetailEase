@@ -1,5 +1,6 @@
 package com.example.simplepos.controller;
 
+import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTOGet;
 import com.example.simplepos.dto.ProductDTOPost;
 import com.example.simplepos.service.ProductService;
@@ -41,6 +42,10 @@ public class ProductController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping("/product/{sku}")
+    public ResponseEntity<ProductDTOGet> getEntryById(@PathVariable Long sku){
+        return new ResponseEntity<>(productService.getEntryById(sku),HttpStatus.OK);
+    }
 
 
     @DeleteMapping("/delete-product")

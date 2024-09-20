@@ -144,4 +144,9 @@ public class ProductService {
         }
 
     }
+
+    public ProductDTOGet getEntryById(Long sku) {
+        Product product = productRepository.findById(sku).orElse(null);
+        return DTOMapper.toDTOGet(product);
+    }
 }

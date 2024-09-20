@@ -54,10 +54,7 @@ public class InventoryController {
         return inventoryService.getAllInventory();
     }
 
-    @GetMapping("/product/{sku}")
-    public ResponseEntity<List<InventoryDTO>> getEntryById(@PathVariable Long sku){
-        return new ResponseEntity<>(inventoryService.getEntryById(sku),HttpStatus.OK);
-    }
+
 
     @GetMapping("/warehouse/{warehouseID}")
     public ResponseEntity<List<InventoryDTO>> getEntryByWarehouseId(@PathVariable Long warehouseID){
