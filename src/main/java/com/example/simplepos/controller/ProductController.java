@@ -44,7 +44,7 @@ public class ProductController {
 
     @GetMapping("/product/{sku}")
     public ResponseEntity<ProductDTOGet> getEntryById(@PathVariable Long sku){
-        return new ResponseEntity<>(productService.getEntryById(sku),HttpStatus.OK);
+        return new ResponseEntity<>(productService.getEntryById(sku),HttpStatus.FOUND);
     }
 
 
