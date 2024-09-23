@@ -60,10 +60,12 @@ public class ProductService {
             if(!productDTOPost.getDiscountName().isEmpty())
                 discount = discountService.getDiscountByName(productDTOPost.getDiscountName());
 
+
             product.setSKU(productDTOPost.getProductSKU());
             product.setProductName(productDTOPost.getProductName());
             product.setProductDescription(productDTOPost.getProductDescription());
             product.setProductCategory(productCategory);
+            product.setProductCostPrice(productDTOPost.getProductCostPrice());
             product.setProductCostPrice(productDTOPost.getProductCostPrice());
             product.setProductSellingPrice(productDTOPost.getProductSellingPrice());
             product.setIsExpirable(productDTOPost.getIsExpirable());

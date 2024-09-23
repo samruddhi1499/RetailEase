@@ -6,6 +6,8 @@ import com.example.simplepos.entity.*;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DTOMapper {
 
@@ -114,6 +116,43 @@ public class DTOMapper {
     }
 
 
+    public static TransactionDTO toDTO(Transaction transaction) {
+
+        TransactionDTO dto = new TransactionDTO();
+        dto.setTransactionId(transaction.getTransactionId());
+        dto.setOrderId(transaction.getOrder().getOrderId());
+        dto.setAmountAfterTax(transaction.getAmountAfterTax());
+        dto.setTransactionDateAndTime(String.valueOf(transaction.getTransactionDateAndTime()));
+        dto.setOrderDTO(toDTO(transaction.getOrder()));
+        return dto;
+    }
+
+    public static OrderDTO toDTO(Order order) {
+
+        OrderDTO dto = new OrderDTO();
+        dto.setOrderId(order.getOrderId());
+        dto.setTotalAmount(order.getTotalAmount());
+        dto.setOrderDateAndTime(String.valueOf(order.getOrderDateAndTime()));
+
+        List<OrderItemDTO> collect = order.getOrderItems().stream()
+                .map(DTOMapper::toDTO)
+                .collect(Collectors.toList());
+        dto.setOrderItems(collect);
+
+        return dto;
+
+
+    }
+
+    public static OrderItemDTO toDTO(OrderItem orderItem) {
+
+        OrderItemDTO dto = new OrderItemDTO();
+        dto.setOrderId(orderItem.getId().getOrderId());
+        dto.setOrderQuantity(orderItem.getOrderQuantity());
+        dto.setProductSku(orderItem.getId().getSKU());
+        return dto;
+
+    }
 
 
 }
