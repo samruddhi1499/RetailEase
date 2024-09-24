@@ -10,6 +10,8 @@ import com.example.simplepos.repository.InventoryRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Lazy;
@@ -85,6 +87,39 @@ public class InventoryService {
             return true;
         }
         return false;
+
+    }
+
+    public void updateInventoryForTransaction(Integer quantity, Long sku) throws ParseException {
+
+        List<Inventory> inventories = inventoryRepository.findBySKU(sku);
+        Date expiryDate = new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31");
+        if(inventories.get(0).getId().getExpiryDate() != expiryDate){
+
+            int count = 0;
+            Date specificDate = inventories.get(0).getId().getExpiryDate();
+            for(Inventory inventory : inventories){
+
+                if (specificDate.after(inventory.getId().getExpiryDate())) {
+                    count ++;
+                    specificDate = inventory.getId().getExpiryDate();
+
+                }
+            }
+            inventories.get(count).setQuantity(inventories.get(count).getQuantity() - quantity);
+            inventoryRepository.save(inventories.get(count));
+
+        }
+        else{
+
+            inventories.get(0).setQuantity(inventories.get(0).getQuantity() - quantity);
+            inventoryRepository.save(inventories.get(0));
+
+        }
+
+
+
+
 
     }
 

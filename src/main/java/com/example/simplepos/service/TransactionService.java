@@ -1,11 +1,10 @@
 package com.example.simplepos.service;
 import com.example.simplepos.dto.TransactionDTO;
-import com.example.simplepos.entity.Inventory;
 import com.example.simplepos.entity.Order;
+import com.example.simplepos.entity.OrderItem;
 import com.example.simplepos.entity.Transaction;
 import com.example.simplepos.mapper.DTOMapper;
 import com.example.simplepos.repository.TransactionRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -18,11 +17,13 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final OrderService orderService;
+    private final InventoryService inventoryService;
 
 
-    public TransactionService(TransactionRepository transactionRepository, OrderService orderService) {
+    public TransactionService(TransactionRepository transactionRepository, OrderService orderService, InventoryService inventoryService) {
         this.transactionRepository = transactionRepository;
         this.orderService = orderService;
+        this.inventoryService = inventoryService;
     }
 
 
@@ -39,8 +40,13 @@ public class TransactionService {
         transaction.setOrder(order);
 
 
-
         transactionRepository.save(transaction);
+        for(OrderItem orderItem : transaction.getOrder().getOrderItems()){
+
+            inventoryService.updateInventoryForTransaction(orderItem.getOrderQuantity(),orderItem.getId().getSKU());
+        }
+
+
     }
 
     public List<TransactionDTO> getAllTransaction() {
