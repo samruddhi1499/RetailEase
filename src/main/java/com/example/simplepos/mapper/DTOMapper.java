@@ -23,13 +23,7 @@ public class DTOMapper {
             LocalDate expiryDate = inventory.getId().getExpiryDate().toInstant().atZone(ZoneId.systemDefault())
                     .toLocalDate();
             LocalDate currentDate = LocalDate.now();
-            long daysBetween = ChronoUnit.DAYS.between(currentDate, expiryDate);
-            if(daysBetween < 20 && daysBetween > 0)
-                dto.setAboutToExpire(daysBetween +" to expire!!");
-            else if(daysBetween < 0)
-                dto.setAboutToExpire("Product is expired");
-            else
-                dto.setAboutToExpire("Not Expired");
+            dto.setAboutToExpire(ChronoUnit.DAYS.between(currentDate, expiryDate));
 
         } else {
             dto.setExpiryDate(null);
