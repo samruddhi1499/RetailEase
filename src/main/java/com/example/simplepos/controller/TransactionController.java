@@ -12,20 +12,21 @@ import java.text.ParseException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/api-transactions")
 public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-    @PostMapping
+    @PostMapping("/add-transaction")
     public ResponseEntity<?> createTransaction(@RequestBody TransactionDTO transactionDTO) throws ParseException {
-        transactionService.saveTransaction(transactionDTO);
+        if(! transactionService.saveTransaction(transactionDTO))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.CREATED);
 
     }
 
     @GetMapping("/all-transactions")
-    public List<TransactionDTO> getAllInventory() {
+    public List<TransactionDTO> getAllTransaction() {
         return transactionService.getAllTransaction();
     }
 //    @PutMapping("/{id}")
@@ -33,9 +34,9 @@ public class TransactionController {
 //        return ResponseEntity.ok(transactionService.updateTransaction(id, transaction));
 //    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
-        transactionService.deleteTransaction(id);
-        return ResponseEntity.ok().build();
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
+//        transactionService.deleteTransaction(id);
+//        return ResponseEntity.ok().build();
+//    }
 }

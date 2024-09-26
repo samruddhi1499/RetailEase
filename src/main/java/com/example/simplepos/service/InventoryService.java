@@ -38,33 +38,38 @@ public class InventoryService {
     }
 
     public boolean addToInventory(InventoryDTO inventoryDTO) throws ParseException {
-        // Retrieve Product and Warehouse entities from their respective services
-        Product product = productService.getProductById(inventoryDTO.getProductSKU());
-        Warehouse warehouse = warehouseService.getWarehouseById(inventoryDTO.getWarehouseID());
 
-        // Create Inventory entity
-        Inventory inventory = new Inventory();
-        InventoryPKId id = new InventoryPKId();
-        id.setProductSKU(inventoryDTO.getProductSKU());
-        id.setWarehouseID(inventoryDTO.getWarehouseID());
-        inventory.setId(id);
-        inventory.setQuantity(inventoryDTO.getQuantity());
-        inventory.setProduct(product);
-        inventory.setWarehouse(warehouse);
-        if (product.getIsExpirable()) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            id.setExpiryDate(sdf.parse(inventoryDTO.getExpiryDate()));
-        } else {
 
-            id.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
-            Inventory byId = inventoryRepository.findById(id).orElse(null);
-            if (byId != null)
-                return false;
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(),inventoryDTO.getWarehouseID(),convertToDate(inventoryDTO.getExpiryDate()))).orElse(null);
+        if (byId != null){
+            return false;
+        }
+        else{
+            Product product = productService.getProductById(inventoryDTO.getProductSKU());
+            Warehouse warehouse = warehouseService.getWarehouseById(inventoryDTO.getWarehouseID());
+
+            // Create Inventory entity
+            Inventory inventory = new Inventory();
+            InventoryPKId id = new InventoryPKId();
+            id.setProductSKU(inventoryDTO.getProductSKU());
+            id.setWarehouseID(inventoryDTO.getWarehouseID());
+            inventory.setId(id);
+            inventory.setQuantity(inventoryDTO.getQuantity());
+            inventory.setProduct(product);
+            inventory.setWarehouse(warehouse);
+            if (product.getIsExpirable()) {
+                id.setExpiryDate(convertToDate(inventoryDTO.getExpiryDate()));
+            } else {
+
+                id.setExpiryDate(new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31"));
+            }
+
+            // Save Inventory entity to database
+            inventoryRepository.save(inventory);
+            return true;
+
         }
 
-        // Save Inventory entity to database
-        inventoryRepository.save(inventory);
-        return true;
 
     }
 
@@ -116,11 +121,7 @@ public class InventoryService {
             inventoryRepository.save(inventories.get(0));
 
         }
-
-
-
-
-
+        inventoryRepository.deleteIfQuantityZero();
     }
 
     public void deleteFromInventory(InventoryDTO inventoryDTO) throws ParseException {

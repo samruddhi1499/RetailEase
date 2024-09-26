@@ -21,40 +21,53 @@ public class OrderItemService {
         this.orderService = orderService;
     }
 
-    public OrderItem saveOrderItem(OrderItemDTO orderItemDto) {
+    public boolean saveOrderItem(OrderItemDTO orderItemDto) {
 
-        Product product = productService.getProductById(orderItemDto.getProductSku());
-        //Order order = orderService.getOrder(orderItemDto.getOrderId());
+        OrderItem orderItem = orderItemRepository.findById(new OrderItemsPKId(orderItemDto.getProductSku(), orderItemDto.getOrderId())).orElse(null);
+        if(orderItem != null){
 
-        OrderItem orderItem = new OrderItem();
-        OrderItemsPKId orderItemsPKId = new OrderItemsPKId();
-        orderItemsPKId.setOrderId(orderItemDto.getOrderId());
-        orderItemsPKId.setSKU(orderItemDto.getProductSku());
-        orderItem.setOrderQuantity(orderItemDto.getOrderQuantity());
-        orderItem.setId(orderItemsPKId);
-        orderItem.setPricePerItem(product.getProductSellingPrice());
-        //orderItem.setOrder(order);
-        orderItem.setProduct(product);
-        return orderItemRepository.save(orderItem);
+            return false;
+        }
+        else {
+
+            orderItem = new OrderItem();
+            Product product = productService.getProductById(orderItemDto.getProductSku());
+            //Order order = orderService.getOrder(orderItemDto.getOrderId());
+
+
+            OrderItemsPKId orderItemsPKId = new OrderItemsPKId();
+            orderItemsPKId.setOrderId(orderItemDto.getOrderId());
+            orderItemsPKId.setSKU(orderItemDto.getProductSku());
+            orderItem.setOrderQuantity(orderItemDto.getOrderQuantity());
+            orderItem.setId(orderItemsPKId);
+            orderItem.setPricePerItem(orderItem.getPricePerItem());
+            //orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            orderItemRepository.save(orderItem);
+
+            return true;
+
+        }
+
     }
 
-    public OrderItem getOrderItem(Long id) {
-        return orderItemRepository.findById(id).orElse(null);
-    }
-
-//    public OrderItem updateOrderItem(Long id, OrderItem newItem) {
-//        return orderItemRepository.findById(id).map(orderItem -> {
-//            orderItem.setSKU(newItem.getSKU());
-//            orderItem.setOrderQuantity(newItem.getOrderQuantity());
-//            orderItem.setPricePerItem(newItem.getPricePerItem());
-//            return orderItemRepository.save(orderItem);
-//        }).orElseGet(() -> {
-//            newItem.setId(id);
-//            return orderItemRepository.save(newItem);
-//        });
+//    public OrderItem getOrderItem(Long id) {
+//        return orderItemRepository.findById(id).orElse(null);
 //    }
-
-    public void deleteOrderItem(Long id) {
-        orderItemRepository.deleteById(id);
-    }
+//
+////    public OrderItem updateOrderItem(Long id, OrderItem newItem) {
+////        return orderItemRepository.findById(id).map(orderItem -> {
+////            orderItem.setSKU(newItem.getSKU());
+////            orderItem.setOrderQuantity(newItem.getOrderQuantity());
+////            orderItem.setPricePerItem(newItem.getPricePerItem());
+////            return orderItemRepository.save(orderItem);
+////        }).orElseGet(() -> {
+////            newItem.setId(id);
+////            return orderItemRepository.save(newItem);
+////        });
+////    }
+//
+//    public void deleteOrderItem(Long id) {
+//        orderItemRepository.deleteById(id);
+//    }
 }

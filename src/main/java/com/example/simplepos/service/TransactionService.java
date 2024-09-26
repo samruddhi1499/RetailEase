@@ -27,23 +27,32 @@ public class TransactionService {
     }
 
 
-    public void saveTransaction(TransactionDTO transactionDTO) throws ParseException {
+    public boolean saveTransaction(TransactionDTO transactionDTO) throws ParseException {
 
         Order order = orderService.getOrder(transactionDTO.getOrderId());
-        Transaction transaction = new Transaction();
+        Transaction transaction = transactionRepository.findById(transactionDTO.getTransactionId()).orElse(null);
 
-        transaction.setTransactionId(transactionDTO.getTransactionId());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(transaction != null)
+            return false;
+
+        else {
+            transaction.setTransactionId(transactionDTO.getTransactionId());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 // Parse the date and time from the DTO
-        transaction.setTransactionDateAndTime(sdf.parse(transactionDTO.getTransactionDateAndTime()));
-        transaction.setAmountAfterTax(transactionDTO.getAmountAfterTax());
-        transaction.setOrder(order);
+            transaction.setTransactionDateAndTime(sdf.parse(transactionDTO.getTransactionDateAndTime()));
+            transaction.setAmountAfterTax(transactionDTO.getAmountAfterTax());
+            transaction.setOrder(order);
 
 
-        transactionRepository.save(transaction);
-        for(OrderItem orderItem : transaction.getOrder().getOrderItems()){
+            transactionRepository.save(transaction);
+            for(OrderItem orderItem : transaction.getOrder().getOrderItems()){
 
-            inventoryService.updateInventoryForTransaction(orderItem.getOrderQuantity(),orderItem.getId().getSKU());
+                inventoryService.updateInventoryForTransaction(orderItem.getOrderQuantity(),orderItem.getId().getSKU());
+
+            }
+
+            return true;
+
         }
 
 
@@ -70,8 +79,6 @@ public class TransactionService {
 //        });
 //    }
 
-    public void deleteTransaction(Long id) {
-        transactionRepository.deleteById(id);
-    }
+
 }
 

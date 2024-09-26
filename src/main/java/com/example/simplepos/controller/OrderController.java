@@ -25,21 +25,23 @@ public class OrderController {
 
     @PostMapping("/add-order")
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) throws ParseException {
-        orderService.saveOrder(orderDTO);
+        if(! orderService.saveOrder(orderDTO))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         for(OrderItemDTO orderItemDTO : orderDTO.getOrderItems()){
 
-            orderItemService.saveOrderItem(orderItemDTO);
+            if(!orderItemService.saveOrderItem(orderItemDTO))
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
-        Order order = orderService.getOrder(id);
-        if (order != null) {
-            return ResponseEntity.ok(order);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
+//        Order order = orderService.getOrder(id);
+//        if (order != null) {
+//            return ResponseEntity.ok(order);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 }

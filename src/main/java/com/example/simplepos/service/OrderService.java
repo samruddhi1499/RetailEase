@@ -22,22 +22,24 @@ public class OrderService {
         this.orderItemService = orderItemService;
     }
 
-    public void saveOrder(OrderDTO orderDTO) throws ParseException {
+    public boolean saveOrder(OrderDTO orderDTO) throws ParseException {
 
-        Order order = new Order();
+        Order order = orderRepository.findById(orderDTO.getOrderId()).orElse(null);
+        if(order != null)
+            return false;
+        else{
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            order = new Order();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 // Parse the date and time from the DTO
-        order.setOrderDateAndTime(sdf.parse(orderDTO.getOrderDateAndTime()));
-        order.setOrderId(orderDTO.getOrderId());
+            order.setOrderDateAndTime(sdf.parse(orderDTO.getOrderDateAndTime()));
+            order.setOrderId(orderDTO.getOrderId());
 
-        order.setTotalAmount(orderDTO.getTotalAmount());
+            order.setTotalAmount(orderDTO.getTotalAmount());
 
-        orderRepository.save(order);
-
-
-
-
+            orderRepository.save(order);
+            return true;
+        }
 
     }
 
