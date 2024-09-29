@@ -27,11 +27,7 @@ public class OrderController {
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO) throws ParseException {
         if(! orderService.saveOrder(orderDTO))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        for(OrderItemDTO orderItemDTO : orderDTO.getOrderItems()){
 
-            if(!orderItemService.saveOrderItem(orderItemDTO))
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

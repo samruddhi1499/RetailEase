@@ -1,11 +1,9 @@
 package com.example.simplepos.repository;
 
-import com.example.simplepos.entity.Transaction;
+import com.example.simplepos.entity.Sales;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+public interface SalesRepository extends JpaRepository<Sales,Long> {
 }
-

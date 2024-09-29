@@ -28,4 +28,5 @@ public class Transaction {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", nullable = false)
     private Order order;
+
 }

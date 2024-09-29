@@ -149,6 +149,15 @@ public class DTOMapper {
     }
 
 
+    public static SalesDTO toDTO(Sales sales) {
+
+        SalesDTO dto = new SalesDTO();
+        dto.setDecision(sales.getDecision());
+        dto.setSalesId(sales.getId());
+        dto.setTransactionId(sales.getTransaction().getTransactionId());
+        dto.setTransactionDate(String.valueOf(sales.getTransactionDate()));
+        return dto;
+    }
 }
 
 

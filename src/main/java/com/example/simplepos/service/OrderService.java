@@ -2,44 +2,53 @@ package com.example.simplepos.service;
 
 import com.example.simplepos.dto.OrderDTO;
 import com.example.simplepos.dto.OrderItemDTO;
+import com.example.simplepos.dto.TransactionDTO;
 import com.example.simplepos.entity.Order;
 import com.example.simplepos.repository.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderItemService orderItemService;
+    private final TransactionService transactionService;
 
-    public OrderService(OrderRepository orderRepository, @Lazy OrderItemService orderItemService) {
+    public OrderService(OrderRepository orderRepository, @Lazy OrderItemService orderItemService, @Lazy TransactionService transactionService) {
         this.orderRepository = orderRepository;
         this.orderItemService = orderItemService;
+        this.transactionService = transactionService;
     }
 
+    @Transactional
     public boolean saveOrder(OrderDTO orderDTO) throws ParseException {
 
-        Order order = orderRepository.findById(orderDTO.getOrderId()).orElse(null);
-        if(order != null)
-            return false;
-        else{
+        Order order = new Order();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-            order = new Order();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-// Parse the date and time from the DTO
-            order.setOrderDateAndTime(sdf.parse(orderDTO.getOrderDateAndTime()));
-            order.setOrderId(orderDTO.getOrderId());
+        order.setOrderDateAndTime(sdf.parse(sdf.format(new Date())));
+        order.setOrderId(orderDTO.getOrderId());
 
-            order.setTotalAmount(orderDTO.getTotalAmount());
+        order.setTotalAmount(orderDTO.getTotalAmount());
 
-            orderRepository.save(order);
-            return true;
+        orderRepository.save(order);
+        for(OrderItemDTO orderItemDTO : orderDTO.getOrderItems()){
+
+            orderItemDTO.setOrderId(order.getOrderId());
+            if(!orderItemService.saveOrderItem(orderItemDTO))
+                return false;
         }
+        order.setOrderItems(orderItemService.getOrderItemsByOrderId(order.getOrderId()));
+        orderRepository.save(order);
+        transactionService.saveTransaction(new TransactionDTO(orderDTO.getAmountAfterTax(),orderDTO.getEmployeeId(), order.getOrderId()));
+        return true;
+
 
     }
 

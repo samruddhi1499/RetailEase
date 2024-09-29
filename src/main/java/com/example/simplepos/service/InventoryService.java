@@ -10,12 +10,11 @@ import com.example.simplepos.repository.InventoryRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Collections;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -39,8 +38,14 @@ public class InventoryService {
 
     public boolean addToInventory(InventoryDTO inventoryDTO) throws ParseException {
 
-
-        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(),inventoryDTO.getWarehouseID(),convertToDate(inventoryDTO.getExpiryDate()))).orElse(null);
+        Date expiryDate;
+        if(inventoryDTO.getExpiryDate().isEmpty()){
+            expiryDate = new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31");
+        }
+        else{
+            expiryDate = convertToDate(inventoryDTO.getExpiryDate());
+        }
+        Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(),inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if (byId != null){
             return false;
         }
@@ -73,6 +78,7 @@ public class InventoryService {
 
     }
 
+    @Transactional
     public boolean updateToInventory(InventoryDTO inventoryDTO) throws ParseException {
 
         Date expiryDate;
@@ -84,53 +90,61 @@ public class InventoryService {
         }
 
         Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
-        if(byId != null) {
-            byId.setQuantity(inventoryDTO.getQuantity());
-            // Save Inventory entity to database
-            inventoryRepository.save(byId);
-            inventoryRepository.deleteIfQuantityZero();
-            return true;
+        if(byId != null){
+            synchronized (byId){
+
+                byId.setQuantity(inventoryDTO.getQuantity());
+                // Save Inventory entity to database
+                inventoryRepository.save(byId);
+                inventoryRepository.deleteIfQuantityZero();
+                return true;
+            }
         }
+
         return false;
 
     }
 
-    public void updateInventoryForTransaction(Integer quantity, Long sku) throws ParseException {
-
+    @Transactional
+    public synchronized void updateInventoryForTransaction(Integer quantity, Long sku) throws ParseException {
         List<Inventory> inventories = inventoryRepository.findBySKU(sku);
         Date expiryDate = new SimpleDateFormat("yyyy-MM-dd").parse("9999-12-31");
-        if(inventories.get(0).getId().getExpiryDate() != expiryDate){
 
+        if(inventories.get(0).getId().getExpiryDate() != expiryDate) {
             int count = 0;
             Date specificDate = inventories.get(0).getId().getExpiryDate();
-            for(Inventory inventory : inventories){
 
+            for(Inventory inventory : inventories) {
                 if (specificDate.after(inventory.getId().getExpiryDate())) {
-                    count ++;
+                    count++;
                     specificDate = inventory.getId().getExpiryDate();
-
                 }
             }
+
             inventories.get(count).setQuantity(inventories.get(count).getQuantity() - quantity);
             inventoryRepository.save(inventories.get(count));
-
-        }
-        else{
-
+        } else {
             inventories.get(0).setQuantity(inventories.get(0).getQuantity() - quantity);
             inventoryRepository.save(inventories.get(0));
-
         }
+
         inventoryRepository.deleteIfQuantityZero();
     }
 
-    public void deleteFromInventory(InventoryDTO inventoryDTO) throws ParseException {
+
+
+    public boolean deleteFromInventory(InventoryDTO inventoryDTO) throws ParseException {
 
         Date expiryDate = convertToDate(inventoryDTO.getExpiryDate());
         Inventory byId = inventoryRepository.findById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate)).orElse(null);
         if(byId != null) {
-            inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate));
+            if(byId.getQuantity() < 0)
+                inventoryRepository.deleteById(new InventoryPKId(inventoryDTO.getProductSKU(), inventoryDTO.getWarehouseID(),expiryDate));
+            else
+                return false;
+            return true;
         }
+        return false;
 
     }
 
