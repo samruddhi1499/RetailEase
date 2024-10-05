@@ -2,6 +2,10 @@ package com.example.simplepos.mapper;
 
 import com.example.simplepos.dto.*;
 import com.example.simplepos.entity.*;
+import com.example.simplepos.service.SalesService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -112,10 +116,12 @@ public class DTOMapper {
 
     public static TransactionDTO toDTO(Transaction transaction) {
 
+        DTOMapper mapper = new DTOMapper();
         TransactionDTO dto = new TransactionDTO();
         dto.setTransactionId(transaction.getTransactionId());
         dto.setOrderId(transaction.getOrder().getOrderId());
         dto.setAmountAfterTax(transaction.getAmountAfterTax());
+        dto.setEmployeeId(transaction.getEmployeeId());
         dto.setTransactionDateAndTime(String.valueOf(transaction.getTransactionDateAndTime()));
         dto.setOrderDTO(toDTO(transaction.getOrder()));
         return dto;
@@ -144,6 +150,7 @@ public class DTOMapper {
         dto.setOrderId(orderItem.getId().getOrderId());
         dto.setOrderQuantity(orderItem.getOrderQuantity());
         dto.setProductSku(orderItem.getId().getSKU());
+        dto.setProoductName(orderItem.getProduct().getProductName());
         return dto;
 
     }
@@ -158,6 +165,8 @@ public class DTOMapper {
         dto.setTransactionDate(String.valueOf(sales.getTransactionDate()));
         return dto;
     }
+
+
 }
 
 

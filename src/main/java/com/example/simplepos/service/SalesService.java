@@ -51,6 +51,12 @@ public class SalesService {
 
     }
 
+    public String getSalesByTransaction(Long transactionId){
+
+        return salesRepository.findSalesByTransaction(transactionId);
+
+    }
+
     public List<SalesDTO> getAllSales(){
 
         List<Sales> sales = salesRepository.findAll();

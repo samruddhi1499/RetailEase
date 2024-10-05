@@ -29,4 +29,6 @@ public class Transaction {
     @JoinColumn(name = "orderId", nullable = false)
     private Order order;
 
+
+
 }
