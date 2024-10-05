@@ -21,6 +21,7 @@ public class Product {
     private Double productCostPrice;
     private Double productSellingPrice;
     private Double productDiscountPrice;
+    @Column(name = "productDescription", columnDefinition="varchar(10000)")
     private String productDescription;
     private String storageType;
     private Boolean isExpirable;
