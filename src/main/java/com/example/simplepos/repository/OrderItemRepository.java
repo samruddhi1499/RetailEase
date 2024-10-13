@@ -15,4 +15,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, OrderItems
 
     @Query(value = "SELECT * FROM order_items WHERE order_id = :paramValue", nativeQuery = true)
     List<OrderItem> findByOrderId(@Param("paramValue") Long paramValue);
+
+    @Query(value = "SELECT o.SKU FROM order_items o GROUP BY o.SKU ORDER BY SUM(o.order_quantity) DESC LIMIT 5", nativeQuery = true)
+    List<Long> findBestSellingProductSKU();
 }

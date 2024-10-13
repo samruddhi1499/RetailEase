@@ -1,16 +1,14 @@
 package com.example.simplepos.controller;
 
-import com.example.simplepos.dto.InventoryDTO;
 import com.example.simplepos.dto.ProductDTOGet;
 import com.example.simplepos.dto.ProductDTOPost;
+import com.example.simplepos.service.OrderItemService;
 import com.example.simplepos.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -19,9 +17,11 @@ public class ProductController {
 
 
     private final ProductService productService;
+    private final OrderItemService orderItemService;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, OrderItemService orderItemService) {
         this.productService = productService;
+        this.orderItemService = orderItemService;
     }
 
 
@@ -32,6 +32,12 @@ public class ProductController {
 
         return new ResponseEntity<>(productDTOGet,HttpStatus.OK);
     }
+
+    @GetMapping("/best-selling-product")public ResponseEntity<List<ProductDTOGet>> getBestSellingProduct() {
+
+        return new ResponseEntity<>(orderItemService.getBestSellingProductSKU(), HttpStatus.OK);}
+
+
 
     @PutMapping("/update-product")
     public ResponseEntity<HttpStatus> updateProduct(@RequestBody ProductDTOPost productDTOPost) throws ParseException {
@@ -54,4 +60,5 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
 }
