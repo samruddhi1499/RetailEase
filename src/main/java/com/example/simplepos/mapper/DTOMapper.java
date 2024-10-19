@@ -2,10 +2,6 @@ package com.example.simplepos.mapper;
 
 import com.example.simplepos.dto.*;
 import com.example.simplepos.entity.*;
-import com.example.simplepos.service.SalesService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -150,7 +146,9 @@ public class DTOMapper {
         dto.setOrderId(orderItem.getId().getOrderId());
         dto.setOrderQuantity(orderItem.getOrderQuantity());
         dto.setProductSku(orderItem.getId().getSKU());
-        dto.setProoductName(orderItem.getProduct().getProductName());
+        dto.setProductName(orderItem.getProduct().getProductName());
+        dto.setProductSellingPrice(orderItem.getProduct().getProductSellingPrice());
+        dto.setProductCostPrice(orderItem.getProduct().getProductCostPrice());
         return dto;
 
     }
